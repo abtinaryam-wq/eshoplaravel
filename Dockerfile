@@ -30,7 +30,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # 4. تنظیم دایرکتوری کاری و کپی فایل‌ها
 WORKDIR /var/www/html/eshop
-COPY eshoplaravel/ .
+COPY .
 COPY nginx.conf /etc/nginx/conf.d/default.conf # کپی کانفیگ Nginx
 
 # 5. اجرای دستورات Build (نصب وابستگی‌ها، کامپایل Assets و ... در زمان Build ایمیج)
