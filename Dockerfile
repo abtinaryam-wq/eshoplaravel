@@ -30,14 +30,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html/eshop
 COPY . .
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/http.d/default.conf
 
 RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-autoloader \
     && npm install \
     && npm run production \
     && chown -R nginx:nginx /var/www/html/eshop \
-    && chmod -R 775 /var/www/html/eshop/storage
+    && chmod -R 775 /var/www/html/eshop/storage \
+    && mkdir -p /run/nginx
 
 EXPOSE 80
 
-CMD sh -c "php-fpm && nginx -g 'daemon off;'"
+CMD php-fpm -D && nginx -g "daemon off;"
