@@ -1,6 +1,6 @@
 FROM php:8.2-fpm-alpine
 
-RUN apk add --no-cache git curl nodejs npm nginx bash
+RUN apk add --no-cache git curl nodejs npm nginx
 
 RUN apk add --no-cache \
         libpng-dev \
@@ -32,7 +32,8 @@ WORKDIR /var/www/html/eshop
 COPY . .
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
-RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-autoloader \
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
+    && composer dump-autoload \
     && npm install \
     && npm run production \
     && chown -R nginx:nginx /var/www/html/eshop \
@@ -43,4 +44,4 @@ RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-auto
 
 EXPOSE 80
 
-CMD sh -c "cp -n .env.example .env && php artisan key:generate --force && php-fpm -D && nginx -g 'daemon off;'"
+CMD php-fpm -D && nginx -g "daemon off;"
