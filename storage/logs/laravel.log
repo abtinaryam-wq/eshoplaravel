@@ -1,0 +1,108 @@
+[2025-11-25 12:33:59] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:34:03] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:37:19] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:37:30] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:40:26] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:40:26] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:40:26] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:40:29] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
+[2025-11-25 12:40:38] local.ERROR: Class "Webkul\Theme\Providers\ThemeServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Webkul\\Theme\\Providers\\ThemeServiceProvider\" not found at C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php:206)
+[stacktrace]
+#0 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(142): Illuminate\\Foundation\\ProviderRepository->createProvider('Webkul\\\\Theme\\\\Pr...')
+#1 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(61): Illuminate\\Foundation\\ProviderRepository->compileManifest(Array)
+#2 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(689): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#3 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#4 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(265): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#7 C:\\Users\\98903\\Desktop\\web\\eshoplaravel\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 {main}
+"} 
