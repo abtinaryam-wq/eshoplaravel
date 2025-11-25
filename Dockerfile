@@ -32,11 +32,10 @@ WORKDIR /var/www/html/eshop
 COPY . .
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN composer install --optimize-autoloader \
-    && composer dump-autoload \
+RUN composer install --no-scripts --no-interaction --prefer-dist \
+    && composer dump-autoload --optimize \
     && npm install \
     && npm run production \
-    && php artisan storage:link \
     && chown -R nginx:nginx /var/www/html/eshop \
     && chmod -R 775 /var/www/html/eshop/storage
 
