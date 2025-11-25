@@ -33,7 +33,6 @@ COPY . .
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
-    && composer dump-autoload \
     && npm install \
     && npm run production \
     && chown -R nginx:nginx /var/www/html/eshop \
