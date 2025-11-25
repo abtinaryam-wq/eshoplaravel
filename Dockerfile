@@ -43,4 +43,6 @@ RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-auto
 
 EXPOSE 80
 
+RUN ls -la /var/www/html/eshop/public/
+
 CMD php-fpm -D && nginx -g "daemon off;"
