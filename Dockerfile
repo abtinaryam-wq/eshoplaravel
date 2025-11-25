@@ -1,29 +1,29 @@
-
 FROM php:8.1-fpm-alpine
 
+RUN apk add --no-cache git curl nodejs npm nginx
 
-RUN apk add --no-cache git curl nodejs npm \
+RUN apk add --no-cache \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        freetype-dev \
+        libzip-dev \
+        icu-dev \
+        oniguruma-dev
 
-    && apk add --no-cache nginx \
-
-    && apk add --no-cache \
-        php81-pdo \
-        php81-pdo_mysql \
-        php81-gd \
-        php81-dom \
-        php81-xml \
-        php81-curl \
-        php81-session \
-        php81-tokenizer \
-        php81-mbstring \
-        php81-zip \
-        php81-opcache \
-        php81-fpm \
-        php81-mysqli \
-        php81-fileinfo \
-        php81-bcmath \
-        php81-exif \
-        php81-iconv
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        pdo \
+        pdo_mysql \
+        gd \
+        dom \
+        xml \
+        mysqli \
+        mbstring \
+        zip \
+        opcache \
+        bcmath \
+        exif \
+        iconv
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
