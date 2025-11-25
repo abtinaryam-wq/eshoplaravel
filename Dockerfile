@@ -23,8 +23,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         zip \
         opcache \
         bcmath \
-        exif \
-        iconv
+        exif
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
