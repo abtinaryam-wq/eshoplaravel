@@ -36,7 +36,9 @@ RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-auto
     && npm install \
     && npm run production \
     && chown -R nginx:nginx /var/www/html/eshop \
+    && chmod -R 755 /var/www/html/eshop \
     && chmod -R 775 /var/www/html/eshop/storage \
+    && chmod -R 775 /var/www/html/eshop/bootstrap/cache \
     && mkdir -p /run/nginx
 
 EXPOSE 80
