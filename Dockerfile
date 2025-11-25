@@ -35,6 +35,10 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-autoloader \
     && npm install \
     && npm run production \
+    && cp .env.example .env \
+    && php artisan key:generate \
+    && php artisan config:clear \
+    && php artisan cache:clear \
     && chown -R nginx:nginx /var/www/html/eshop \
     && chmod -R 755 /var/www/html/eshop \
     && chmod -R 775 /var/www/html/eshop/storage \
@@ -42,7 +46,5 @@ RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-auto
     && mkdir -p /run/nginx
 
 EXPOSE 80
-
-RUN ls -la /var/www/html/eshop/public/
 
 CMD php-fpm -D && nginx -g "daemon off;"
