@@ -32,8 +32,7 @@ WORKDIR /var/www/html/eshop
 COPY . .
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN composer install --no-scripts --no-interaction --prefer-dist \
-    && composer dump-autoload --optimize \
+RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-autoloader \
     && npm install \
     && npm run production \
     && chown -R nginx:nginx /var/www/html/eshop \
