@@ -38,15 +38,12 @@ class AddStoredFunctionToGetUrlPathOfCategory extends Migration
                         AND parent_translations.locale = localeCode
                     GROUP BY
                         node.id;
-
                     IF urlPath IS NULL THEN
                         SET urlPath = (SELECT slug FROM {$dbPrefix}category_translations WHERE category_id = categoryId);
                     END IF;
-
                 ELSE
                     SET urlPath = '';
                 END IF;
-
                 RETURN urlPath;
             END
 SQL;
@@ -59,6 +56,7 @@ SQL;
         if (DB::getDriverName() !== 'mysql') {
             return;
         }
+
         DB::unprepared('DROP FUNCTION IF EXISTS get_url_path_of_category');
     }
 }
