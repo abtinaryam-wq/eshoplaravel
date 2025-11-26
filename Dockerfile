@@ -1,6 +1,6 @@
 FROM php:8.2-fpm-alpine
 
-RUN apk add --no-cache git curl nodejs npm nginx bash
+RUN apk add --no-cache git curl nodejs npm nginx bash mysql-client
 
 RUN apk add --no-cache \
         libpng-dev \
