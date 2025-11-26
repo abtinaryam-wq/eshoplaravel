@@ -2,22 +2,15 @@
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
-use Webkul\Category\Models\CategoryTranslation;
 
 class AddTriggerToCategoryTranslations extends Migration
 {
     private const TRIGGER_NAME_INSERT = 'trig_category_translations_insert';
     private const TRIGGER_NAME_UPDATE = 'trig_category_translations_update';
 
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         if (DB::getDriverName() !== 'mysql') {
-            // فقط روی MySQL اجرا شود!
             return;
         }
 
@@ -30,7 +23,7 @@ class AddTriggerToCategoryTranslations extends Migration
             FOR EACH ROW
             BEGIN
                 $triggerBody
-            END;
+            END
 SQL;
 
         $updateTrigger = <<< SQL
@@ -39,37 +32,26 @@ SQL;
             FOR EACH ROW
             BEGIN
                 $triggerBody
-            END;
+            END
 SQL;
 
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_INSERT));
+        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_INSERT));
         DB::unprepared(sprintf($insertTrigger, self::TRIGGER_NAME_INSERT));
 
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_UPDATE));
+        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_UPDATE));
         DB::unprepared(sprintf($updateTrigger, self::TRIGGER_NAME_UPDATE));
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         if (DB::getDriverName() !== 'mysql') {
-            // فقط روی MySQL اجرا شود!
             return;
         }
 
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_INSERT));
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_UPDATE));
+        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_INSERT));
+        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_UPDATE));
     }
 
-    /**
-     * Returns trigger body as string
-     *
-     * @return string
-     */
     private function getTriggerBody()
     {
         $dbPrefix = DB::getTablePrefix();
@@ -78,9 +60,7 @@ SQL;
             DECLARE parentUrlPath varchar(255);
             DECLARE urlPath varchar(255);
 
-            -- Category with id 1 is root by default
-            IF NEW.category_id <> 1
-            THEN
+            IF NEW.category_id <> 1 THEN
 
                 SELECT
                     GROUP_CONCAT(parent_translations.slug SEPARATOR '/') INTO parentUrlPath
@@ -97,8 +77,7 @@ SQL;
                 GROUP BY
                     node.id;
 
-                IF parentUrlPath IS NULL
-                THEN
+                IF parentUrlPath IS NULL THEN
                     SET urlPath = NEW.slug;
                 ELSE
                     SET urlPath = concat(parentUrlPath, '/', NEW.slug);
