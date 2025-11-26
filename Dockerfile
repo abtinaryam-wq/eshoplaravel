@@ -2,7 +2,8 @@ FROM php:8.2-fpm-alpine
 
 RUN apk add --no-cache \
     git curl nodejs npm nginx bash \
-    postgresql-dev postgresql-client
+    postgresql-dev postgresql-client \
+    mysql-client mysql-dev
 
 RUN apk add --no-cache \
         libpng-dev \
@@ -18,6 +19,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         pdo \
         pdo_pgsql \
         pgsql \
+        pdo_mysql \
+        mysqli \
         gd \
         dom \
         xml \
@@ -45,6 +48,7 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
 
 EXPOSE 80
 
-RUN php artisan migrate --force && php artisan db:seed --force
-
-CMD php-fpm -D && nginx -g "daemon off;"
+CMD php artisan migrate --force && \
+    php artisan db:seed --force && \
+    php-fpm -D && \
+    nginx -g "daemon off;"
