@@ -32,10 +32,9 @@ WORKDIR /var/www/html/eshop
 COPY . .
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
-RUN composer install --no-scripts --no-interaction --prefer-dist --optimize-autoloader \
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
     && npm install \
     && npm run production \
-    && rm -f bootstrap/cache/services.php bootstrap/cache/packages.php bootstrap/cache/config.php \
     && chown -R nginx:nginx /var/www/html/eshop \
     && chmod -R 755 /var/www/html/eshop \
     && chmod -R 775 /var/www/html/eshop/storage \
