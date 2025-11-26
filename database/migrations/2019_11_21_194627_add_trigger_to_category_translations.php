@@ -16,6 +16,11 @@ class AddTriggerToCategoryTranslations extends Migration
      */
     public function up()
     {
+        if (DB::getDriverName() !== 'mysql') {
+            // فقط روی MySQL اجرا شود!
+            return;
+        }
+
         $dbPrefix = DB::getTablePrefix();
 
         $triggerBody = $this->getTriggerBody();
@@ -51,6 +56,11 @@ SQL;
      */
     public function down()
     {
+        if (DB::getDriverName() !== 'mysql') {
+            // فقط روی MySQL اجرا شود!
+            return;
+        }
+
         DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_INSERT));
         DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_UPDATE));
     }
@@ -98,6 +108,5 @@ SQL;
 
             END IF;
 SQL;
-
     }
 }
