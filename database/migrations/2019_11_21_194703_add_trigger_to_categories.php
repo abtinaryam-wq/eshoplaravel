@@ -21,7 +21,7 @@ class AddTriggerToCategories extends Migration
 
         $insertTrigger = <<<SQL
             CREATE TRIGGER %s
-            BEFORE INSERT ON ${dbPrefix}categories
+            BEFORE INSERT ON {$dbPrefix}categories
             FOR EACH ROW
             BEGIN
                 SET NEW.url_path = NEW.slug;
@@ -30,7 +30,7 @@ SQL;
 
         $updateTrigger = <<<SQL
             CREATE TRIGGER %s
-            BEFORE UPDATE ON ${dbPrefix}categories
+            BEFORE UPDATE ON {$dbPrefix}categories
             FOR EACH ROW
             BEGIN
                 SET NEW.url_path = NEW.slug;
