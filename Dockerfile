@@ -45,4 +45,6 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
 
 EXPOSE 80
 
+RUN php artisan migrate --force && php artisan db:seed --force
+
 CMD php-fpm -D && nginx -g "daemon off;"
