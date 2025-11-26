@@ -15,11 +15,11 @@ class AddTableAddresses extends Migration
 
         $dbPrefix = DB::getTablePrefix();
 
-        // اگر جدول addresses وجود ندارد، بسازیم
+        // Create addresses table if it doesn't exist
         if (! Schema::hasTable($dbPrefix . 'addresses')) {
             Schema::create($dbPrefix . 'addresses', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('address_type');           // customer | cart | order
+                $table->string('address_type');
                 $table->unsignedBigInteger('customer_id')->nullable();
                 $table->string('first_name')->nullable();
                 $table->string('last_name')->nullable();
@@ -39,7 +39,7 @@ class AddTableAddresses extends Migration
             });
         }
 
-        // مهاجرت داده‌ها از customer_addresses
+        // Migrate data from customer_addresses
         DB::statement("
             INSERT INTO {$dbPrefix}addresses (
                 address_type,
@@ -80,10 +80,11 @@ class AddTableAddresses extends Migration
                 jsonb_build_object('old_customer_address_id', ca.id),
                 ca.created_at,
                 ca.updated_at
-            FROM {$dbPrefix}customer_addresses ca;
+            FROM {$dbPrefix}customer_addresses ca
+            WHERE NOT EXISTS (SELECT 1 FROM {$dbPrefix}addresses WHERE additional->>'old_customer_address_id' = ca.id::text);
         ");
 
-        -- مهاجرت داده‌ها از cart_addresses (اگر جدول وجود دارد)
+        // Migrate data from cart_addresses if table exists
         if (Schema::hasTable($dbPrefix . 'cart_addresses')) {
             DB::statement("
                 INSERT INTO {$dbPrefix}addresses (
@@ -125,11 +126,12 @@ class AddTableAddresses extends Migration
                     jsonb_build_object('old_cart_address_id', ca.id),
                     ca.created_at,
                     ca.updated_at
-                FROM {$dbPrefix}cart_addresses ca;
+                FROM {$dbPrefix}cart_addresses ca
+                WHERE NOT EXISTS (SELECT 1 FROM {$dbPrefix}addresses WHERE additional->>'old_cart_address_id' = ca.id::text);
             ");
         }
 
-        -- مهاجرت داده‌ها از order_addresses (اگر جدول وجود دارد)
+        // Migrate data from order_addresses if table exists
         if (Schema::hasTable($dbPrefix . 'order_addresses')) {
             DB::statement("
                 INSERT INTO {$dbPrefix}addresses (
@@ -171,7 +173,8 @@ class AddTableAddresses extends Migration
                     jsonb_build_object('old_order_address_id', oa.id),
                     oa.created_at,
                     oa.updated_at
-                FROM {$dbPrefix}order_addresses oa;
+                FROM {$dbPrefix}order_addresses oa
+                WHERE NOT EXISTS (SELECT 1 FROM {$dbPrefix}addresses WHERE additional->>'old_order_address_id' = oa.id::text);
             ");
         }
     }
