@@ -2,4 +2,6 @@
 
 namespace Webkul\Marketing\Contracts;
 
-interface Event {}
+interface Event
+{
+}

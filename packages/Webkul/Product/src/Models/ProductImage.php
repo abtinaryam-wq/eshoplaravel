@@ -11,7 +11,7 @@ class ProductImage extends Model implements ProductImageContract
     /**
      * Timestamp.
      *
-     * @var bool
+     * @var boolean
      */
     public $timestamps = false;
 

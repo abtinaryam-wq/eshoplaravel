@@ -2,4 +2,6 @@
 
 namespace Webkul\Core\Contracts;
 
-interface Currency {}
+interface Currency
+{
+}

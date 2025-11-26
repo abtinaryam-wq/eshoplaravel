@@ -2,4 +2,6 @@
 
 namespace Webkul\CartRule\Contracts;
 
-interface CartRuleCouponUsage {}
+interface CartRuleCouponUsage
+{
+}

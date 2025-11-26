@@ -2,8 +2,9 @@
 
 namespace Webkul\Product\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Webkul\Product\Models\Product;
 use Webkul\Product\Models\ProductReview;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductReviewFactory extends Factory
 {
@@ -16,14 +17,17 @@ class ProductReviewFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {
         return [
-            'title'   => $this->faker->words(5, true),
-            'rating'  => $this->faker->numberBetween(0, 10),
-            'status'  => 'pending',
-            'comment' => $this->faker->sentence(20),
+            'title'      => $this->faker->words(5, true),
+            'rating'     => $this->faker->numberBetween(0, 10),
+            'status'     => 1,
+            'comment'    => $this->faker->sentence(20),
+            'product_id' => Product::factory(),
         ];
     }
 }

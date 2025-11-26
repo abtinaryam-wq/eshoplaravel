@@ -3,49 +3,24 @@
 namespace Webkul\Sales\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Webkul\Sales\Contracts\Invoice as InvoiceContract;
-use Webkul\Sales\Database\Factories\InvoiceFactory;
-use Webkul\Sales\Traits\InvoiceReminder;
 use Webkul\Sales\Traits\PaymentTerm;
+use Webkul\Sales\Database\Factories\InvoiceFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Webkul\Sales\Traits\InvoiceReminder;
 
 class Invoice extends Model implements InvoiceContract
 {
-    use HasFactory, InvoiceReminder, PaymentTerm;
-
-    /**
-     * Pending invoice.
-     */
-    public const STATUS_PENDING = 'pending';
-
-    /**
-     * Payment pending invoice.
-     */
-    public const STATUS_PENDING_PAYMENT = 'pending_payment';
-
-    /**
-     * Paid invoice.
-     */
-    public const STATUS_PAID = 'paid';
-
-    /**
-     * Overdue invoice.
-     */
-    public const STATUS_OVERDUE = 'overdue';
-
-    /**
-     * Refunded invoice.
-     */
-    public const STATUS_REFUNDED = 'refunded';
+    use PaymentTerm, InvoiceReminder, HasFactory;
 
     /**
      * The attributes that aren't mass assignable.
      *
-     * @var string[]
+     * @var string[]|bool
      */
     protected $guarded = [
         'id',
@@ -59,24 +34,9 @@ class Invoice extends Model implements InvoiceContract
      * @var array
      */
     protected $statusLabel = [
-        self::STATUS_PENDING         => 'Pending',
-        self::STATUS_PENDING_PAYMENT => 'Pending Payment',
-        self::STATUS_PAID            => 'Paid',
-        self::STATUS_OVERDUE         => 'Overdue',
-        self::STATUS_REFUNDED        => 'Refunded',
-    ];
-
-    /**
-     * Invoice status label class.
-     *
-     * @var array
-     */
-    protected $statusLabelClass = [
-        self::STATUS_PENDING         => 'label-pending',
-        self::STATUS_PENDING_PAYMENT => 'label-pending',
-        self::STATUS_PAID            => 'label-active',
-        self::STATUS_OVERDUE         => 'label-canceled',
-        self::STATUS_REFUNDED        => 'label-canceled',
+        'pending'  => 'Pending',
+        'paid'     => 'Paid',
+        'refunded' => 'Refunded',
     ];
 
     /**
@@ -84,15 +44,7 @@ class Invoice extends Model implements InvoiceContract
      */
     public function getStatusLabelAttribute()
     {
-        return $this->statusLabel[$this->state] ?? $this->state;
-    }
-
-    /**
-     * Returns the status label class from status code.
-     */
-    public function getStatusLabelClassAttribute()
-    {
-        return $this->statusLabelClass[$this->state] ?? 'label-active';
+        return $this->statusLabel[$this->state] ?? '';
     }
 
     /**
@@ -139,6 +91,8 @@ class Invoice extends Model implements InvoiceContract
 
     /**
      * Create a new factory instance for the model.
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

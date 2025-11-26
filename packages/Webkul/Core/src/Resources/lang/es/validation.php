@@ -1,12 +1,11 @@
 <?php
 
 return [
-    'address'                 => 'El :attribute sólo puede aceptar caracteres alfabéticos, numéricos, espacios, coma y guiones.',
-    'alpha-numeric-space'     => 'El :attribute sólo puede aceptar caracteres alfabéticos, numéricos y espacios.',
+    'address'                 => 'The :attribute can only accept alpha, numeric, spaces, comma and dashes.',
+    'alpha-numeric-space'     => 'The :attribute can only accept alpha, numeric and spaces.',
     'code'                    => 'O :attribute debe ser válido.',
-    'comma-separated-integer' => 'El campo :attribute debe ser numérico y puede contener coma.',
     'decimal'                 => 'O :attribute debe ser válido.',
-    'phone-number'            => 'El :attribute debe ser un número telefónico válido.',
-    'postcode'                => ':attribute debe ser un código postal válido.',
+    'phone-number'            => 'The :attribute must be valid phone number.',
     'slug'                    => 'O :attribute debe tener un slug válido.',
+    'comma-seperated-integer' => 'The :attribute field must be numeric and may contain comma.',
 ];

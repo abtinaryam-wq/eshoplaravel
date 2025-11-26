@@ -4,4 +4,6 @@ namespace Webkul\Shipping\Exceptions;
 
 use Exception;
 
-class CarrierCodeException extends Exception {}
+class CarrierCodeException extends Exception
+{
+}

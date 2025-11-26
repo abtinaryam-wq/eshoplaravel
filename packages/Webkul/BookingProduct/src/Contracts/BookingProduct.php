@@ -2,4 +2,6 @@
 
 namespace Webkul\BookingProduct\Contracts;
 
-interface BookingProduct {}
+interface BookingProduct
+{
+}

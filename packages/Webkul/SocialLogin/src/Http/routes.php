@@ -1,10 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+// Controllers
 use Webkul\SocialLogin\Http\Controllers\LoginController;
 
-Route::controller(LoginController::class)->middleware(['web', 'shop'])->prefix('customer/social-login/{provider}')->group(function () {
-    Route::get('', 'redirectToProvider')->name('customer.social-login.index');
+Route::group(['middleware' => ['web', 'locale', 'theme', 'currency']], function () {
+    Route::prefix('customer')->group(function () {
+        Route::get('social-login/{provider}', [LoginController::class, 'redirectToProvider'])->defaults('_config', [
+            'redirect' => 'customer.profile.index'
+        ])->name('customer.social-login.index');
 
-    Route::get('callback', 'handleProviderCallback')->name('customer.social-login.callback');
+        Route::get('social-login/{provider}/callback',[LoginController::class, 'handleProviderCallback'])->defaults('_config', [
+            'redirect' => 'customer.profile.index'
+        ])->name('customer.social-login.callback');
+    });
 });

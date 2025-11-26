@@ -2,19 +2,19 @@
 
 namespace Webkul\Product\Helpers;
 
-class BundleOption
+class BundleOption extends AbstractProduct
 {
     /**
      * Product
      *
-     * @var \Webkul\Product\Contracts\Product
+     * @var \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat
      */
     protected $product;
 
     /**
      * Returns bundle option config
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return array
      */
     public function getBundleConfig($product)
@@ -35,7 +35,7 @@ class BundleOption
     {
         $options = [];
 
-        // eager load all inventories for bundle options
+        # eager load all inventories for bundle options
         $this->product->bundle_options->load('bundle_option_products.product.inventories');
 
         foreach ($this->product->bundle_options as $option) {
@@ -51,7 +51,7 @@ class BundleOption
             $options[$option->id] = $data;
         }
 
-        usort($options, function ($a, $b) {
+        usort ($options, function($a, $b) {
             if ($a['sort_order'] == $b['sort_order']) {
                 return 0;
             }
@@ -108,7 +108,37 @@ class BundleOption
             ];
         }
 
-        usort($products, function ($a, $b) {
+        usort ($products, function($a, $b) {
+            if ($a['sort_order'] == $b['sort_order']) {
+                return 0;
+            }
+
+            return ($a['sort_order'] < $b['sort_order']) ? -1 : 1;
+        });
+
+        return $products;
+    }
+
+    /**
+     * Get formed data from bundle option product
+     *
+     * @return array
+     */
+    public function getProductOptions($product)
+    {
+        $products = [];
+
+        $products[$product->id] = [
+            'id'         => $product->id,
+            'qty'        => $product->qty,
+            'price'      => $product->product->getTypeInstance()->getProductPrices(),
+            'name'       => $product->product->name,
+            'product_id' => $product->product_id,
+            'is_default' => $product->is_default,
+            'sort_order' => $product->sort_order,
+        ];
+
+        usort ($products, function($a, $b) {
             if ($a['sort_order'] == $b['sort_order']) {
                 return 0;
             }

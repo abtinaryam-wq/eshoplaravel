@@ -8,20 +8,18 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Laravel\Sanctum\HasApiTokens;
-use Shetabit\Visitor\Traits\Visitor;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Webkul\Checkout\Models\CartProxy;
-use Webkul\Core\Models\ChannelProxy;
 use Webkul\Core\Models\SubscribersListProxy;
 use Webkul\Customer\Contracts\Customer as CustomerContract;
 use Webkul\Customer\Database\Factories\CustomerFactory;
+use Webkul\Customer\Notifications\CustomerResetPassword;
 use Webkul\Product\Models\ProductReviewProxy;
-use Webkul\Sales\Models\InvoiceProxy;
 use Webkul\Sales\Models\OrderProxy;
-use Webkul\Shop\Mail\Customer\ResetPasswordNotification;
 
-class Customer extends Authenticatable implements CustomerContract
+class Customer extends Authenticatable implements CustomerContract, JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, Visitor;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The table associated with the model.
@@ -29,15 +27,6 @@ class Customer extends Authenticatable implements CustomerContract
      * @var string
      */
     protected $table = 'customers';
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'subscribed_to_news_letter' => 'boolean',
-    ];
 
     /**
      * The attributes that are mass assignable.
@@ -55,11 +44,11 @@ class Customer extends Authenticatable implements CustomerContract
         'api_token',
         'token',
         'customer_group_id',
-        'channel_id',
         'subscribed_to_news_letter',
         'status',
         'is_verified',
         'is_suspended',
+        'notes',
     ];
 
     /**
@@ -74,20 +63,44 @@ class Customer extends Authenticatable implements CustomerContract
     ];
 
     /**
-     * The accessors to append to the model's array form.
+     * Create a new factory instance for the model.
      *
-     * @var array
+     * @return \Webkul\Customer\Database\Factories\CustomerFactory
      */
-    protected $appends = ['image_url'];
+    protected static function newFactory()
+    {
+        return CustomerFactory::new ();
+    }
 
     /**
      * Send the password reset notification.
      *
      * @param  string  $token
+     * @return void
      */
     public function sendPasswordResetNotification($token): void
     {
-        $this->notify(new ResetPasswordNotification($token));
+        $this->notify(new CustomerResetPassword($token));
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims(): array
+    {
+        return [];
     }
 
     /**
@@ -102,10 +115,12 @@ class Customer extends Authenticatable implements CustomerContract
 
     /**
      * Get the customer full name.
+     *
+     * @return string
      */
     public function getNameAttribute(): string
     {
-        return ucfirst($this->first_name).' '.ucfirst($this->last_name);
+        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
     }
 
     /**
@@ -126,6 +141,7 @@ class Customer extends Authenticatable implements CustomerContract
      * Is email exists or not.
      *
      * @param  string  $email
+     * @return bool
      */
     public function emailExists($email): bool
     {
@@ -170,16 +186,6 @@ class Customer extends Authenticatable implements CustomerContract
     }
 
     /**
-     * Customer's relation with invoice .
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\hasManyThrough
-     */
-    public function invoices()
-    {
-        return $this->hasManyThrough(InvoiceProxy::modelClass(), OrderProxy::modelClass());
-    }
-
-    /**
      * Customer's relation with wishlist items.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -191,6 +197,8 @@ class Customer extends Authenticatable implements CustomerContract
 
     /**
      * Is wishlist shared by the customer.
+     *
+     * @return bool
      */
     public function isWishlistShared(): bool
     {
@@ -205,7 +213,7 @@ class Customer extends Authenticatable implements CustomerContract
     public function getWishlistSharedLink()
     {
         return $this->isWishlistShared()
-            ? URL::signedRoute('shop.customer.wishlist.shared', ['id' => $this->id])
+            ? URL::signedRoute('customer.wishlist.shared', ['id' => $this->id])
             : null;
     }
 
@@ -246,7 +254,7 @@ class Customer extends Authenticatable implements CustomerContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function orders()
+    public function all_orders()
     {
         return $this->hasMany(OrderProxy::modelClass(), 'customer_id');
     }
@@ -256,19 +264,9 @@ class Customer extends Authenticatable implements CustomerContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function reviews()
+    public function all_reviews()
     {
         return $this->hasMany(ProductReviewProxy::modelClass(), 'customer_id');
-    }
-
-    /**
-     * Get all notes of a customer.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function notes()
-    {
-        return $this->hasMany(CustomerNoteProxy::modelClass(), 'customer_id');
     }
 
     /**
@@ -279,25 +277,5 @@ class Customer extends Authenticatable implements CustomerContract
     public function subscription()
     {
         return $this->hasOne(SubscribersListProxy::modelClass(), 'customer_id');
-    }
-
-    /**
-     * Get the channel that owns the customer.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function channel()
-    {
-        return $this->belongsTo(ChannelProxy::modelClass(), 'channel_id');
-    }
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return \Webkul\Customer\Database\Factories\CustomerFactory
-     */
-    protected static function newFactory()
-    {
-        return CustomerFactory::new();
     }
 }

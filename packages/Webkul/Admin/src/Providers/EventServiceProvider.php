@@ -3,13 +3,6 @@
 namespace Webkul\Admin\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Webkul\Admin\Listeners\Admin;
-use Webkul\Admin\Listeners\Customer;
-use Webkul\Admin\Listeners\GDPR;
-use Webkul\Admin\Listeners\Invoice;
-use Webkul\Admin\Listeners\Order;
-use Webkul\Admin\Listeners\Refund;
-use Webkul\Admin\Listeners\Shipment;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -19,40 +12,30 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'customer.create.after' => [
-            [Customer::class, 'afterCreated'],
+        'user.admin.update-password' => [
+            'Webkul\Admin\Listeners\PasswordChange@sendUpdatePasswordMail'
         ],
-
-        'customer.gdpr-request.create.after' => [
-            [GDPR::class, 'afterGdprRequestCreated'],
-        ],
-
-        'customer.gdpr-request.update.after' => [
-            [GDPR::class, 'afterGdprRequestUpdated'],
-        ],
-
-        'admin.password.update.after' => [
-            [Admin::class, 'afterPasswordUpdated'],
-        ],
-
         'checkout.order.save.after' => [
-            [Order::class, 'afterCreated'],
+            'Webkul\Admin\Listeners\Order@sendNewOrderMail'
         ],
-
-        'sales.order.cancel.after' => [
-            [Order::class, 'afterCanceled'],
-        ],
-
         'sales.invoice.save.after' => [
-            [Invoice::class, 'afterCreated'],
+            'Webkul\Admin\Listeners\Order@sendNewInvoiceMail'
         ],
-
         'sales.shipment.save.after' => [
-            [Shipment::class, 'afterCreated'],
+            'Webkul\Admin\Listeners\Order@sendNewShipmentMail'
         ],
-
+        'sales.order.cancel.after' => [
+            'Webkul\Admin\Listeners\Order@sendCancelOrderMail'
+        ],
         'sales.refund.save.after' => [
-            [Refund::class, 'afterCreated'],
+            'Webkul\Admin\Listeners\Order@refundOrder',
+            'Webkul\Admin\Listeners\Order@sendNewRefundMail',
+        ],
+        'sales.order.comment.create.after' => [
+            'Webkul\Admin\Listeners\Order@sendOrderCommentMail'
+        ],
+        'core.channel.update.after' => [
+            'Webkul\Admin\Listeners\ChannelSettingsChange@checkForMaintenaceMode'
         ],
     ];
 }

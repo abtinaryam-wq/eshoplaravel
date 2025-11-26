@@ -3,11 +3,11 @@
 namespace Webkul\CartRule\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Webkul\CartRule\Contracts\CartRuleCoupon as CartRuleCouponContract;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Webkul\Core\Database\Factories\CartRuleCouponFactory;
+use Webkul\CartRule\Contracts\CartRuleCoupon as CartRuleCouponContract;
 
 class CartRuleCoupon extends Model implements CartRuleCouponContract
 {
@@ -42,6 +42,8 @@ class CartRuleCoupon extends Model implements CartRuleCouponContract
 
     /**
      * Create a new factory instance for the model
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

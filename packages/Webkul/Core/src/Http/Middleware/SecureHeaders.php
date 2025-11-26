@@ -11,12 +11,16 @@ class SecureHeaders
      *
      * @var array
      */
-    private $unwantedHeaderList = [];
+    private $unwantedHeaderList = [
+        'X-Powered-By',
+        'Server',
+    ];
 
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -33,7 +37,6 @@ class SecureHeaders
     /**
      * Set headers.
      *
-     * @param  \Illuminate\Http\Response  $response
      * @return void
      */
     private function setHeaders($response)

@@ -3,15 +3,22 @@
 namespace Webkul\Sales\Repositories;
 
 use Webkul\Core\Eloquent\Repository;
-use Webkul\Sales\Contracts\OrderTransaction;
 
+/**
+ * Order Transaction Repository
+ *
+ * @author    Jitendra Singh <jitendra@webkul.com>
+ * @copyright 2018 Webkul Software Pvt Ltd (http://www.webkul.com)
+ */
 class OrderTransactionRepository extends Repository
 {
     /**
-     * Specify model class name.
+     * Specify Model class name
+     *
+     * @return string
      */
-    public function model(): string
+    function model(): string
     {
-        return OrderTransaction::class;
+        return 'Webkul\Sales\Contracts\OrderTransaction';
     }
 }

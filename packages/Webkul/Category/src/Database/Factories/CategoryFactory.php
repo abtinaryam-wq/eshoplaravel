@@ -2,8 +2,8 @@
 
 namespace Webkul\Category\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Webkul\Category\Models\Category;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoryFactory extends Factory
 {
@@ -24,16 +24,21 @@ class CategoryFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {
         return [
-            'status'    => 1,
-            'position'  => $this->faker->randomDigit(),
+            'status' => 1,
+            'position' => $this->faker->randomDigit(),
             'parent_id' => 1,
         ];
     }
 
+    /**
+     *
+     */
     public function inactive(): CategoryFactory
     {
         return $this->state(function (array $attributes) {

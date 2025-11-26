@@ -2,4 +2,6 @@
 
 namespace Webkul\Tax\Contracts;
 
-interface TaxCategory {}
+interface TaxCategory
+{
+}

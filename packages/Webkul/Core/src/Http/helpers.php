@@ -1,11 +1,5 @@
 <?php
 
-use Stevebauman\Purify\Facades\Purify;
-use Webkul\Core\Facades\Acl;
-use Webkul\Core\Facades\Core;
-use Webkul\Core\Facades\Menu;
-use Webkul\Core\Facades\SystemConfig;
-
 if (! function_exists('core')) {
     /**
      * Core helper.
@@ -14,84 +8,7 @@ if (! function_exists('core')) {
      */
     function core()
     {
-        return Core::getFacadeRoot();
-    }
-}
-
-if (! function_exists('menu')) {
-    /**
-     * Menu helper.
-     *
-     * @return \Webkul\Core\Menu
-     */
-    function menu()
-    {
-        return Menu::getFacadeRoot();
-    }
-}
-
-if (! function_exists('acl')) {
-    /**
-     * Acl helper.
-     *
-     * @return \Webkul\Core\Acl
-     */
-    function acl()
-    {
-        return Acl::getFacadeRoot();
-    }
-}
-
-if (! function_exists('system_config')) {
-    /**
-     * System Config helper.
-     *
-     * @return \Webkul\Core\SystemConfig
-     */
-    function system_config()
-    {
-        return SystemConfig::getFacadeRoot();
-    }
-}
-
-if (! function_exists('clean_path')) {
-    /**
-     * Clean path.
-     */
-    function clean_path(string $path): string
-    {
-        return collect(explode('/', $path))
-            ->filter(fn ($segment) => ! empty($segment))
-            ->join('/');
-    }
-}
-
-if (! function_exists('clean_content')) {
-    /**
-     * Clean content.
-     */
-    function clean_content(string $content): string
-    {
-        $cleaned = Purify::clean($content);
-
-        $patterns = [
-            '/\{\{.*?\}\}/',
-            '/\{!!.*?!!\}/',
-            '/@(php|if|else|endif|foreach|endforeach|for|endfor|while|endwhile|switch|endswitch|case|break|continue|include|extends|section|endsection|yield|push|endpush|stack|endstack)/',
-            '/<\?php.*?\?>/s',
-        ];
-
-        foreach ($patterns as $pattern) {
-            $cleaned = preg_replace($pattern, '', $cleaned);
-        }
-
-        $cleaned = str_replace(
-            ['{{', '}}', '{!!', '!!}'],
-            ['&#123;&#123;', '&#125;&#125;', '&#123;!!', '!!&#125;'],
-            $cleaned
-        );
-
-        return $cleaned;
+        return app()->make(\Webkul\Core\Core::class);
     }
 }
 

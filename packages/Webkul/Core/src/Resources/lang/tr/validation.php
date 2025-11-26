@@ -1,12 +1,11 @@
 <?php
 
 return [
-    'address'                 => ':attribute yalnızca alfa, sayısal, boşluk, virgül ve tire karakterlerini kabul edebilir.',
-    'alpha-numeric-space'     => ':attribute yalnızca alfa, sayısal ve boşlukları kabul edebilir.',
+    'address'                 => 'The :attribute can only accept alpha, numeric, spaces, comma and dashes.',
+    'alpha-numeric-space'     => 'The :attribute can only accept alpha, numeric and spaces.',
     'code'                    => ':attribute değeri geçerli olmalı.',
-    'comma-separated-integer' => ':attribute alanı sayısal olmalı ve virgül içerebilir.',
     'decimal'                 => ':attribute geçerli olmalı.',
-    'phone-number'            => ':attribute geçerli bir telefon numarası olmalıdır.',
-    'postcode'                => ':attribute geçerli bir posta kodu olmalıdır',
+    'phone-number'            => 'The :attribute must be valid phone number.',
     'slug'                    => ':attribute değeri geçerli bir url olmalı.',
+    'comma-seperated-integer' => 'The :attribute field must be numeric and may contain comma.',
 ];

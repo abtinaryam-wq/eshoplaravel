@@ -3,13 +3,16 @@
 namespace Webkul\Checkout\Repositories;
 
 use Webkul\Core\Eloquent\Repository;
+use Webkul\Checkout\Contracts\CartItem;
 
 class CartItemRepository extends Repository
 {
     /**
      * Specify Model class name
+     *
+     * @return string
      */
-    public function model(): string
+    function model(): string
     {
         return 'Webkul\Checkout\Contracts\CartItem';
     }

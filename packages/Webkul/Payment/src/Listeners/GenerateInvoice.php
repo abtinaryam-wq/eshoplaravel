@@ -1,24 +1,30 @@
 <?php
-
 namespace Webkul\Payment\Listeners;
 
-use Webkul\Sales\Repositories\InvoiceRepository;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 use Webkul\Sales\Repositories\OrderRepository;
+use Webkul\Sales\Repositories\InvoiceRepository;
 
 /**
  * Generate Invoice Event handler
+ *
  */
 class GenerateInvoice
 {
     /**
      * Create the event listener.
      *
+     * @param  Webkul\Sales\Repositories\OrderRepository $orderRepository
+     * @param \Webkul\Sales\Repositories\InvoiceRepository invoiceRepository
      * @return void
      */
     public function __construct(
         protected OrderRepository $orderRepository,
         protected InvoiceRepository $invoiceRepository
-    ) {}
+    )
+    {
+    }
 
     /**
      * Generate a new invoice.
@@ -30,23 +36,23 @@ class GenerateInvoice
     {
         if (
             $order->payment->method == 'cashondelivery'
-            && core()->getConfigData('sales.payment_methods.cashondelivery.generate_invoice')
+            && core()->getConfigData('sales.paymentmethods.cashondelivery.generate_invoice')
         ) {
             $this->invoiceRepository->create(
                 $this->prepareInvoiceData($order),
-                core()->getConfigData('sales.payment_methods.cashondelivery.invoice_status'),
-                core()->getConfigData('sales.payment_methods.cashondelivery.order_status')
+                core()->getConfigData('sales.paymentmethods.cashondelivery.invoice_status'),
+                core()->getConfigData('sales.paymentmethods.cashondelivery.order_status')
             );
         }
 
         if (
             $order->payment->method == 'moneytransfer'
-            && core()->getConfigData('sales.payment_methods.moneytransfer.generate_invoice')
+            && core()->getConfigData('sales.paymentmethods.moneytransfer.generate_invoice')
         ) {
             $this->invoiceRepository->create(
                 $this->prepareInvoiceData($order),
-                core()->getConfigData('sales.payment_methods.moneytransfer.invoice_status'),
-                core()->getConfigData('sales.payment_methods.moneytransfer.order_status')
+                core()->getConfigData('sales.paymentmethods.moneytransfer.invoice_status'),
+                core()->getConfigData('sales.paymentmethods.moneytransfer.order_status')
             );
         }
     }

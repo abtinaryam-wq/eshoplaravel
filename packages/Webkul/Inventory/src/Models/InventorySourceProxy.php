@@ -4,4 +4,7 @@ namespace Webkul\Inventory\Models;
 
 use Konekt\Concord\Proxies\ModelProxy;
 
-class InventorySourceProxy extends ModelProxy {}
+class InventorySourceProxy extends ModelProxy
+{
+
+}

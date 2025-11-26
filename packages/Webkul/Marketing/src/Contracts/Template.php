@@ -2,4 +2,6 @@
 
 namespace Webkul\Marketing\Contracts;
 
-interface Template {}
+interface Template
+{
+}

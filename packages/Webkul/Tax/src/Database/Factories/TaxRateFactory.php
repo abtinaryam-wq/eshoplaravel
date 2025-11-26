@@ -2,8 +2,8 @@
 
 namespace Webkul\Tax\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Webkul\Tax\Models\TaxRate;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaxRateFactory extends Factory
 {
@@ -16,6 +16,8 @@ class TaxRateFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {

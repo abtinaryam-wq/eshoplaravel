@@ -3,12 +3,12 @@
 namespace Webkul\Attribute\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Webkul\Attribute\Contracts\AttributeFamily as AttributeFamilyContract;
-use Webkul\Attribute\Database\Factories\AttributeFamilyFactory;
 use Webkul\Product\Models\ProductProxy;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Webkul\Attribute\Database\Factories\AttributeFamilyFactory;
+use Webkul\Attribute\Contracts\AttributeFamily as AttributeFamilyContract;
 
 class AttributeFamily extends Model implements AttributeFamilyContract
 {
@@ -33,16 +33,17 @@ class AttributeFamily extends Model implements AttributeFamilyContract
             ->select('attributes.*');
     }
 
+
     /**
      * Get all the comparable attributes which belongs to attribute family.
      */
     public function getComparableAttributesBelongsToFamily()
     {
         return (AttributeProxy::modelClass())::join('attribute_group_mappings', 'attribute_group_mappings.attribute_id', '=', 'attributes.id')
-            ->select('attributes.*')
-            ->where('attributes.is_comparable', 1)
-            ->distinct()
-            ->get();
+                                             ->select('attributes.*')
+                                             ->where('attributes.is_comparable', 1)
+                                             ->distinct()
+                                             ->get();
     }
 
     /**
@@ -50,7 +51,8 @@ class AttributeFamily extends Model implements AttributeFamilyContract
      */
     public function getCustomAttributesAttribute()
     {
-        return $this->custom_attributes()->get();
+        return $this->custom_attributes()
+                    ->get();
     }
 
     /**
@@ -58,7 +60,8 @@ class AttributeFamily extends Model implements AttributeFamilyContract
      */
     public function attribute_groups(): HasMany
     {
-        return $this->hasMany(AttributeGroupProxy::modelClass())->orderBy('position');
+        return $this->hasMany(AttributeGroupProxy::modelClass())
+                    ->orderBy('position');
     }
 
     /**
@@ -67,9 +70,9 @@ class AttributeFamily extends Model implements AttributeFamilyContract
     public function getConfigurableAttributesAttribute()
     {
         return $this->custom_attributes()
-            ->where('attributes.is_configurable', 1)
-            ->where('attributes.type', 'select')
-            ->get();
+                    ->where('attributes.is_configurable', 1)
+                    ->where('attributes.type', 'select')
+                    ->get();
     }
 
     /**
@@ -82,6 +85,8 @@ class AttributeFamily extends Model implements AttributeFamilyContract
 
     /**
      * Create a new factory instance for the model
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

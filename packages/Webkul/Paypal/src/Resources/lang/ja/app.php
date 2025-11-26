@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'errors' => [
-        'invalid-configs'      => 'PayPal決済方法の設定に問題があるようです。サポートについては店舗オーナーにお問い合わせください。',
-        'something-went-wrong' => 'PayPal決済方法に問題が発生しました。サポートについては店舗オーナーにお問い合わせください。',
-    ],
+    'error' => [
+        'universal-error' => 'Something went wrong!',
+        'sdk-validation-error' => 'Client ID not recognized for either production or sandbox!',
+        'authorization-error' => 'Client ID and Client Secret should be valid!'
+    ]
 ];

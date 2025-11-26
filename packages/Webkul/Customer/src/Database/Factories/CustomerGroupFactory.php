@@ -2,8 +2,8 @@
 
 namespace Webkul\Customer\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Webkul\Customer\Models\CustomerGroup;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CustomerGroupFactory extends Factory
 {
@@ -17,14 +17,17 @@ class CustomerGroupFactory extends Factory
     /**
      * Define the model's default state.
      *
+     * @return array
      * @throws \Exception
      */
     public function definition(): array
     {
+        $name = ucfirst($this->faker->word);
+
         return [
-            'name'            => ucfirst($this->faker->word),
+            'name' => $name,
             'is_user_defined' => $this->faker->boolean,
-            'code'            => $this->faker->regexify('/^[a-zA-Z]+[a-zA-Z0-9_]+$/'),
+            'code' => lcfirst($name),
         ];
     }
 }

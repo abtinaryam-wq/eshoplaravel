@@ -2,4 +2,6 @@
 
 namespace Webkul\Checkout\Contracts;
 
-interface CartAddress {}
+interface CartAddress
+{
+}

@@ -2,19 +2,20 @@
 
 namespace Webkul\Theme;
 
-use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\Config;
+use Webkul\Theme\Facades\Themes as Themes;
 
 class Theme
 {
     /**
-     * Contains theme parent.
+     * Contains theme parent
      *
-     * @var \Webkul\Theme\Theme
+     * @var Theme
      */
     public $parent;
 
     /**
-     * Create a new theme instance.
+     * Create a new Theme instance.
      *
      * @param  string  $code
      * @param  string  $name
@@ -26,17 +27,16 @@ class Theme
         public $code,
         public $name = null,
         public $assetsPath = null,
-        public $viewsPath = null,
-        public $viewsNamespace = null,
-        public $vite = []
-    ) {
+        public $viewsPath = null
+    )
+    {
         $this->assetsPath = $assetsPath === null ? $code : $assetsPath;
 
         $this->viewsPath = $viewsPath === null ? $code : $viewsPath;
     }
 
     /**
-     * Sets the parent.
+     * Sets the parent
      *
      * @param  \Webkul\Theme\Theme
      * @return void
@@ -47,7 +47,7 @@ class Theme
     }
 
     /**
-     * Return the parent.
+     * Return the parent
      *
      * @return \Webkul\Theme\Theme
      */
@@ -55,9 +55,9 @@ class Theme
     {
         return $this->parent;
     }
-
+    
     /**
-     * Return all the possible view paths.
+     * Return all the possible view paths
      *
      * @return array
      */
@@ -83,28 +83,34 @@ class Theme
     }
 
     /**
-     * Convert to asset url based on current theme.
+     * Convert to asset url based on current theme
      *
+     * @param  string  $url
+     * @param  bool|null  $secure
      * @return string
      */
-    public function url(string $url)
+    public function url($url, $secure = null)
     {
-        $viteUrl = trim($this->vite['package_assets_directory'], '/').'/'.$url;
+        $url = ltrim($url, '/');
 
-        return Vite::useHotFile($this->vite['hot_file'])
-            ->useBuildDirectory($this->vite['build_directory'])
-            ->asset($viteUrl);
-    }
+        if (preg_match('/^((http(s?):)?\/\/)/i', $url)) {
+            return $url;
+        }
+        
+        if (preg_match('/^((http(s?):)?\/\/)/i', $this->assetsPath)) {
+            return $this->assetsPath . '/' . $url;
+        }
 
-    /**
-     * Set bagisto vite.
-     *
-     * @return \Illuminate\Foundation\Vite
-     */
-    public function setBagistoVite(array $entryPoints)
-    {
-        return Vite::useHotFile($this->vite['hot_file'])
-            ->useBuildDirectory($this->vite['build_directory'])
-            ->withEntryPoints($entryPoints);
+        $fullUrl = str_replace("public/", "", $this->assetsPath) . '/' . $url;
+
+        if (file_exists(public_path($fullUrl))) {
+            return asset($fullUrl, $secure);
+        }
+
+        if ($parentTheme = $this->getParent()) {
+            return $parentTheme->url($url);
+        }
+
+        return asset($url, $secure);
     }
 }

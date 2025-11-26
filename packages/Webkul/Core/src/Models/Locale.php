@@ -14,6 +14,20 @@ class Locale extends Model implements LocaleContract
     use HasFactory;
 
     /**
+     * List of all default locale images.
+     *
+     * @var array
+     */
+    protected $defaultImages = [
+        'de' => 'flags/de.png',
+        'en' => 'flags/en.png',
+        'es' => 'flags/es.png',
+        'fr' => 'flags/fr.png',
+        'nl' => 'flags/nl.png',
+        'tr' => 'flags/tr.png',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -29,37 +43,51 @@ class Locale extends Model implements LocaleContract
      *
      * @var array
      */
-    protected $appends = ['logo_url'];
+    protected $appends = ['image_url'];
 
     /**
      * Create a new factory instance for the model.
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {
-        return LocaleFactory::new();
+        return LocaleFactory::new ();
     }
 
     /**
-     * Get the logo full path of the locale.
+     * Get image url for the logo image.
      *
-     * @return string|null
+     * @return string
      */
-    public function getLogoUrlAttribute()
+    public function getImageUrlAttribute(): string
     {
-        return $this->logo_url();
+        return $this->image_url();
     }
 
     /**
-     * Get the logo full path of the locale.
+     * Get image url for the logo image.
      *
-     * @return string|void
+     * @return string
      */
-    public function logo_url()
+    public function image_url(): string
     {
-        if (empty($this->logo_path)) {
-            return;
+        if (! $this->locale_image) {
+            return $this->getDefaultImageSource();
         }
 
-        return Storage::url($this->logo_path);
+        return Storage::url($this->locale_image);
+    }
+
+    /**
+     * Get default image source.
+     *
+     * @return string
+     */
+    public function getDefaultImageSource(): string
+    {
+        return isset($this->defaultImages[$this->code]) && file_exists($this->defaultImages[$this->code])
+            ? asset($this->defaultImages[$this->code])
+            : '';
     }
 }

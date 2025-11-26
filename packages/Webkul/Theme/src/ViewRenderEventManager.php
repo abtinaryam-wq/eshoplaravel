@@ -7,61 +7,37 @@ use Illuminate\Support\Facades\Event;
 class ViewRenderEventManager
 {
     /**
-     * Contains all templates.
+     * Contains all themes
      *
      * @var array
      */
     protected $templates = [];
 
     /**
-     * Event name.
-     */
-    protected $eventName;
-
-    /**
-     * Parameters passed with event.
+     * Paramters passed with event
      *
      * @var array
      */
     protected $params;
 
     /**
-     * Fires event for rendering template.
+     * Fires event for rendering template
      *
+     * @param  string  $eventName
      * @param  array|null  $params
-     * @return self
+     * @return string
      */
-    public function handleRenderEvent(string $eventName, mixed $params = null)
+    public function handleRenderEvent($eventName, $params = null)
     {
-        $this->templates = [];
-
-        $this->eventName = $eventName;
-
         $this->params = $params ?? [];
 
         Event::dispatch($eventName, $this);
 
-        return $this;
-    }
-
-    /**
-     * Get all templates.
-     */
-    public function getTemplates()
-    {
         return $this->templates;
     }
 
     /**
-     * Get event name.
-     */
-    public function getEventName()
-    {
-        return $this->eventName;
-    }
-
-    /**
-     * Get all params.
+     *  get params
      *
      * @return array
      */
@@ -71,8 +47,9 @@ class ViewRenderEventManager
     }
 
     /**
-     * Get specific param by name.
+     *  get param
      *
+     * @param  $name
      * @return mixed
      */
     public function getParam($name)
@@ -81,7 +58,7 @@ class ViewRenderEventManager
     }
 
     /**
-     * Add templates for render.
+     * Add templates for render
      *
      * @param  string  $template
      * @return void
@@ -92,38 +69,22 @@ class ViewRenderEventManager
     }
 
     /**
-     * Renders templates.
+     * Renders templates
      *
      * @return string
      */
     public function render()
     {
-        $string = '';
+        $string = "";
 
         foreach ($this->templates as $template) {
             if (view()->exists($template)) {
-                $string .= view($template, $this->params)->render();
+                $string .= view($template , $this->params)->render();
             } elseif (is_string($template)) {
                 $string .= $template;
             }
         }
 
-        $this->resetState();
-
         return $string;
-    }
-
-    /**
-     * Reset the manager state.
-     *
-     * @return void
-     */
-    protected function resetState()
-    {
-        $this->templates = [];
-
-        $this->eventName = null;
-
-        $this->params = null;
     }
 }

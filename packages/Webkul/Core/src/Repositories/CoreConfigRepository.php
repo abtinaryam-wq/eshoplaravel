@@ -2,17 +2,21 @@
 
 namespace Webkul\Core\Repositories;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Prettus\Repository\Traits\CacheableRepository;
+use Webkul\Core\Contracts\CoreConfig;
 use Webkul\Core\Eloquent\Repository;
+use Webkul\Core\Traits\CoreConfigField;
 
 class CoreConfigRepository extends Repository
 {
+    use CoreConfigField, CacheableRepository;
+
     /**
      * Specify model class name.
+     *
+     * @return string
      */
     public function model(): string
     {
@@ -20,7 +24,10 @@ class CoreConfigRepository extends Repository
     }
 
     /**
-     * Create core configuration.
+     * Create.
+     *
+     * @param  array  $data
+     * @return \Webkul\Core\Contracts\CoreConfig
      */
     public function create(array $data)
     {
@@ -38,24 +45,30 @@ class CoreConfigRepository extends Repository
         }
 
         foreach ($data as $method => $fieldData) {
-            $recursiveData = $this->recursiveArray($fieldData, $method);
+            $recurssiveData = $this->recuressiveArray($fieldData, $method);
 
-            foreach ($recursiveData as $fieldName => $value) {
+            foreach ($recurssiveData as $fieldName => $value) {
                 $field = core()->getConfigField($fieldName);
 
-                $channelBased = ! empty($field['channel_based']);
+                $channelBased = isset($field['channel_based']) && $field['channel_based'];
 
-                $localeBased = ! empty($field['locale_based']);
+                $localeBased = isset($field['locale_based']) && $field['locale_based'];
 
                 if (
-                    gettype($value) == 'array'
+                    getType($value) == 'array'
                     && ! isset($value['delete'])
                 ) {
                     $value = implode(',', $value);
                 }
 
-                if (! empty($field['channel_based'])) {
-                    if (! empty($field['locale_based'])) {
+                if (
+                    isset($field['channel_based'])
+                    && $field['channel_based']
+                ) {
+                    if (
+                        isset($field['locale_based'])
+                        && $field['locale_based']
+                    ) {
                         $coreConfigValue = $this->model
                             ->where('code', $fieldName)
                             ->where('locale_code', $locale)
@@ -68,7 +81,10 @@ class CoreConfigRepository extends Repository
                             ->get();
                     }
                 } else {
-                    if (! empty($field['locale_based'])) {
+                    if (
+                        isset($field['locale_based'])
+                        && $field['locale_based']
+                    ) {
                         $coreConfigValue = $this->model
                             ->where('code', $fieldName)
                             ->where('locale_code', $locale)
@@ -85,7 +101,7 @@ class CoreConfigRepository extends Repository
                 }
 
                 if (! count($coreConfigValue)) {
-                    parent::create([
+                    $this->model->create([
                         'code'         => $fieldName,
                         'value'        => $value,
                         'locale_code'  => $localeBased ? $locale : null,
@@ -98,14 +114,14 @@ class CoreConfigRepository extends Repository
                         }
 
                         if (isset($value['delete'])) {
-                            parent::delete($coreConfig['id']);
+                            $this->model->destroy($coreConfig['id']);
                         } else {
-                            parent::update([
+                            $coreConfig->update([
                                 'code'         => $fieldName,
                                 'value'        => $value,
                                 'locale_code'  => $localeBased ? $locale : null,
                                 'channel_code' => $channelBased ? $channel : null,
-                            ], $coreConfig->id);
+                            ]);
                         }
                     }
                 }
@@ -116,94 +132,26 @@ class CoreConfigRepository extends Repository
     }
 
     /**
-     * Get the configuration title.
-     */
-    protected function getTranslatedTitle(mixed $configuration): string
-    {
-        if (
-            method_exists($configuration, 'getTitle')
-            && ! is_null($configuration->getTitle())
-        ) {
-            return trans($configuration->getTitle());
-        }
-
-        if (
-            method_exists($configuration, 'getName')
-            && ! is_null($configuration->getName())
-        ) {
-            return trans($configuration->getName());
-        }
-
-        return '';
-    }
-
-    /**
-     * Get children and fields.
-     */
-    protected function getChildrenAndFields(mixed $configuration, string $searchTerm, array $path, array &$results): void
-    {
-        if (
-            method_exists($configuration, 'getChildren')
-            || method_exists($configuration, 'getFields')
-        ) {
-            $children = $configuration->haveChildren()
-                ? $configuration->getChildren()
-                : $configuration->getFields();
-
-            $tempPath = array_merge($path, [[
-                'key'   => $configuration->getKey() ?? null,
-                'title' => $this->getTranslatedTitle($configuration),
-            ]]);
-
-            $results = array_merge($results, $this->search($children, $searchTerm, $tempPath));
-        }
-    }
-
-    /**
-     * Search configuration.
-     *
-     * @param  array  $items
-     */
-    public function search(Collection $items, string $searchTerm, array $path = []): array
-    {
-        $results = [];
-
-        foreach ($items as $configuration) {
-            $title = $this->getTranslatedTitle($configuration);
-
-            if (
-                stripos($title, $searchTerm) !== false
-                && count($path)
-            ) {
-                $queryParam = $path[1]['key'] ?? $configuration->getKey();
-
-                $results[] = [
-                    'title' => implode(' > ', [...Arr::pluck($path, 'title'), $title]),
-                    'url'   => route('admin.configuration.index', Str::replace('.', '/', $queryParam)),
-                ];
-            }
-
-            $this->getChildrenAndFields($configuration, $searchTerm, $path, $results);
-        }
-
-        return $results;
-    }
-
-    /**
      * Recursive array.
      *
+     * @param  array  $formData
+     * @param  string  $method
      * @return array
      */
-    public function recursiveArray(array $formData, string $method, array &$data = [], array &$recursiveArrayData = [])
+    public function recuressiveArray(array $formData, $method)
     {
+        static $data = [];
+
+        static $recuressiveArrayData = [];
+
         foreach ($formData as $form => $formValue) {
-            $value = $method.'.'.$form;
+            $value = $method . '.' . $form;
 
             if (is_array($formValue)) {
                 $dim = $this->countDim($formValue);
 
                 if ($dim > 1) {
-                    $this->recursiveArray($formValue, $value, $data, $recursiveArrayData);
+                    $this->recuressiveArray($formValue, $value);
                 } elseif ($dim == 1) {
                     $data[$value] = $formValue;
                 }
@@ -214,15 +162,15 @@ class CoreConfigRepository extends Repository
             $field = core()->getConfigField($key);
 
             if ($field) {
-                $recursiveArrayData[$key] = $value;
+                $recuressiveArrayData[$key] = $value;
             } else {
                 foreach ($value as $key1 => $val) {
-                    $recursiveArrayData[$key.'.'.$key1] = $val;
+                    $recuressiveArrayData[$key . '.' . $key1] = $val;
                 }
             }
         }
 
-        return $recursiveArrayData;
+        return $recuressiveArrayData;
     }
 
     /**
@@ -233,8 +181,12 @@ class CoreConfigRepository extends Repository
      */
     public function countDim($array)
     {
-        return is_array(reset($array))
-            ? $this->countDim(reset($array)) + 1
-            : 1;
+        if (is_array(reset($array))) {
+            $return = $this->countDim(reset($array)) + 1;
+        } else {
+            $return = 1;
+        }
+
+        return $return;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Webkul\Attribute\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Webkul\Attribute\Models\Attribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AttributeFactory extends Factory
 {
@@ -30,6 +30,8 @@ class AttributeFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {
@@ -49,7 +51,7 @@ class AttributeFactory extends Factory
 
         return [
             'admin_name'          => $this->faker->word,
-            'code'                => $this->faker->regexify('/^[a-zA-Z]+[a-zA-Z0-9_]+$/'),
+            'code'                => $this->faker->word,
             'type'                => array_rand($types),
             'validation'          => '',
             'position'            => $this->faker->randomDigit,
@@ -62,6 +64,7 @@ class AttributeFactory extends Factory
             'is_user_defined'     => true,
             'is_visible_on_front' => true,
             'swatch_type'         => null,
+            'use_in_flat'         => true,
         ];
     }
 

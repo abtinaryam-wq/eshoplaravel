@@ -2,7 +2,7 @@
 
 namespace Webkul\Admin\Http\Controllers\Sales;
 
-use Webkul\Admin\DataGrids\Sales\OrderShipmentDataGrid;
+use Webkul\Admin\DataGrids\OrderShipmentsDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\OrderRepository;
@@ -11,15 +11,28 @@ use Webkul\Sales\Repositories\ShipmentRepository;
 class ShipmentController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected $_config;
+
+    /**
      * Create a new controller instance.
      *
+     * @param  \Webkul\Sales\Repositories\ShipmentRepository   $shipmentRepository
+     * @param  \Webkul\Sales\Repositories\OrderRepository  $orderRepository
+     * @param  \Webkul\Sales\Repositories\OrderitemRepository  $orderItemRepository
      * @return void
      */
     public function __construct(
+        protected ShipmentRepository $shipmentRepository,
         protected OrderRepository $orderRepository,
-        protected OrderItemRepository $orderItemRepository,
-        protected ShipmentRepository $shipmentRepository
-    ) {}
+        protected OrderItemRepository $orderItemRepository
+    )
+    {
+        $this->_config = request('_config');
+    }
 
     /**
      * Display a listing of the resource.
@@ -29,41 +42,43 @@ class ShipmentController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            return datagrid(OrderShipmentDataGrid::class)->process();
+            return app(OrderShipmentsDataGrid::class)->toJson();
         }
 
-        return view('admin::sales.shipments.index');
+        return view($this->_config['view']);
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param  int  $orderId
      * @return \Illuminate\View\View
      */
-    public function create(int $orderId)
+    public function create($orderId)
     {
         $order = $this->orderRepository->findOrFail($orderId);
 
         if (! $order->channel || ! $order->canShip()) {
-            session()->flash('error', trans('admin::app.sales.shipments.create.creation-error'));
+            session()->flash('error', trans('admin::app.sales.shipments.creation-error'));
 
             return redirect()->back();
         }
 
-        return view('admin::sales.shipments.create', compact('order'));
+        return view($this->_config['view'], compact('order'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
+     * @param  int  $orderId
      * @return \Illuminate\Http\Response
      */
-    public function store(int $orderId)
+    public function store($orderId)
     {
         $order = $this->orderRepository->findOrFail($orderId);
 
         if (! $order->canShip()) {
-            session()->flash('error', trans('admin::app.sales.shipments.create.order-error'));
+            session()->flash('error', trans('admin::app.sales.shipments.order-error'));
 
             return redirect()->back();
         }
@@ -73,10 +88,10 @@ class ShipmentController extends Controller
             'shipment.items.*.*' => 'required|numeric|min:0',
         ]);
 
-        $data = request()->only(['shipment', 'carrier_name']);
+        $data = request()->all();
 
         if (! $this->isInventoryValidate($data)) {
-            session()->flash('error', trans('admin::app.sales.shipments.create.quantity-invalid'));
+            session()->flash('error', trans('admin::app.sales.shipments.quantity-invalid'));
 
             return redirect()->back();
         }
@@ -85,9 +100,9 @@ class ShipmentController extends Controller
             'order_id' => $orderId,
         ]));
 
-        session()->flash('success', trans('admin::app.sales.shipments.create.success'));
+        session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Shipment']));
 
-        return redirect()->route('admin.sales.orders.view', $orderId);
+        return redirect()->route($this->_config['redirect'], $orderId);
     }
 
     /**
@@ -160,12 +175,13 @@ class ShipmentController extends Controller
     /**
      * Show the view for the specified resource.
      *
+     * @param  int  $id
      * @return \Illuminate\View\View
      */
-    public function view(int $id)
+    public function view($id)
     {
         $shipment = $this->shipmentRepository->findOrFail($id);
 
-        return view('admin::sales.shipments.view', compact('shipment'));
+        return view($this->_config['view'], compact('shipment'));
     }
 }

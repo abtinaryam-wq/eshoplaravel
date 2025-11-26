@@ -2,45 +2,41 @@
 
 namespace Webkul\Customer\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Rule;
+use Webkul\Customer\Rules\VatValidator;
 
-class VatIdRule implements ValidationRule
+/**
+ * Class VatIdRule
+ *
+ * @see https://laravel.com/docs/5.8/validation#using-rule-objects
+ * @package App\Rules
+ */
+class VatIdRule implements Rule
 {
     /**
-     * The country code from the input form.
-     *
-     * @var string
-     */
-    private $country;
-
-    /**
-     * Run the validation rule.
+     * Determine if the validation rule passes.
      *
      * The rules are borrowed from:
-     *
      * @see https://raw.githubusercontent.com/danielebarbaro/laravel-vat-eu-validator/master/src/VatValidator.php
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param  string  $attribute
+     * @param  mixed  $value
+     * @return bool
      */
-    public function validate(string $attribute, mixed $value, Closure $fail): void
+    public function passes($attribute, $value)
     {
-        $validator = new VatValidator;
+        $validator = new VatValidator();
 
-        if (! empty($value) && ! $validator->validate($value, $this->country)) {
-            $fail('customer::app.validations.vat-id.invalid-format')->translate();
-        }
+        return empty($value) || $validator->validate($value);
     }
 
     /**
-     * Set the country code.
+     * Get the validation error message.
      *
-     * @param  string  $country
+     * @return string
      */
-    public function setCountry($country): self
+    public function message()
     {
-        $this->country = $country;
-
-        return $this;
+        return trans('shop::app.invalid_vat_format');
     }
 }

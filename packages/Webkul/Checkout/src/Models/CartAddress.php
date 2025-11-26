@@ -4,32 +4,28 @@ namespace Webkul\Checkout\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Webkul\Checkout\Contracts\CartAddress as CartAddressContract;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Webkul\Checkout\Database\Factories\CartAddressFactory;
+use Webkul\Checkout\Contracts\CartAddress as CartAddressContract;
 use Webkul\Core\Models\Address;
 
 /**
  * Class CartAddress
  *
+ * @package Webkul\Checkout\Models
  *
- * @property int $cart_id
+ * @property integer $cart_id
  * @property Cart $cart
+ *
  */
 class CartAddress extends Address implements CartAddressContract
 {
     use HasFactory;
 
-    /**
-     * Define the address type shipping.
-     */
     public const ADDRESS_TYPE_SHIPPING = 'cart_shipping';
 
-    /**
-     * Define the address type billing.
-     */
     public const ADDRESS_TYPE_BILLING = 'cart_billing';
 
     /**
@@ -41,6 +37,8 @@ class CartAddress extends Address implements CartAddressContract
 
     /**
      * The "booted" method of the model.
+     *
+     * @return void
      */
     protected static function boot(): void
     {
@@ -67,11 +65,13 @@ class CartAddress extends Address implements CartAddressContract
      */
     public function cart(): BelongsTo
     {
-        return $this->belongsTo(CartProxy::modelClass());
+        return $this->belongsTo(Cart::class);
     }
 
     /**
      * Create a new factory instance for the model
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

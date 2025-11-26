@@ -10,6 +10,8 @@ class CustomerRepository extends Repository
 {
     /**
      * Specify model class name.
+     *
+     * @return string
      */
     public function model(): string
     {
@@ -20,25 +22,32 @@ class CustomerRepository extends Repository
      * Check if customer has order pending or processing.
      *
      * @param  \Webkul\Customer\Models\Customer
-     * @return bool
+     * @return boolean
      */
-    public function haveActiveOrders($customer)
+    public function checkIfCustomerHasOrderPendingOrProcessing($customer)
     {
-        return $customer->orders->pluck('status')->contains(function ($val) {
+        return $customer->all_orders->pluck('status')->contains(function ($val) {
             return $val === 'pending' || $val === 'processing';
         });
     }
 
     /**
-     * Returns current customer group
+     * Check if bulk customers, if they have order pending or processing.
      *
-     * @return \Webkul\Customer\Models\CustomerGroup
+     * @param  array
+     * @return boolean
      */
-    public function getCurrentGroup()
+    public function checkBulkCustomerIfTheyHaveOrderPendingOrProcessing($customerIds)
     {
-        $customer = auth()->guard()->user();
+        foreach ($customerIds as $customerId) {
+            $customer = $this->findorFail($customerId);
 
-        return $customer->group ?? core()->getGuestCustomerGroup();
+            if ($this->checkIfCustomerHasOrderPendingOrProcessing($customer)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -46,7 +55,7 @@ class CustomerRepository extends Repository
      *
      * @param  array  $data
      * @param  \Webkul\Customer\Models\Customer  $customer
-     * @param  string  $type
+     * @param  string $type
      * @return void
      */
     public function uploadImages($data, $customer, $type = 'image')
@@ -55,8 +64,8 @@ class CustomerRepository extends Repository
             $request = request();
 
             foreach ($data[$type] as $imageId => $image) {
-                $file = $type.'.'.$imageId;
-                $dir = 'customer/'.$customer->id;
+                $file = $type . '.' . $imageId;
+                $dir = 'customer/' . $customer->id;
 
                 if ($request->hasFile($file)) {
                     if ($customer->{$type}) {
@@ -83,7 +92,7 @@ class CustomerRepository extends Repository
      * @param  \Webkul\Customer\Contracts\Customer  $customer
      * @return mixed
      */
-    public function syncNewRegisteredCustomerInformation($customer)
+    public function syncNewRegisteredCustomerInformations($customer)
     {
         /**
          * Setting registered customer to orders.

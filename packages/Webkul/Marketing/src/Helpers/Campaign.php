@@ -14,16 +14,24 @@ class Campaign
     /**
      * Create a new helper instance.
      *
+     * @param  \Webkul\Marketing\Repositories\EventRepository  $eventRepository
+     * @param  \Webkul\Marketing\Repositories\CampaignRepository  $campaignRepository
+     * @param  \Webkul\Marketing\Repositories\TemplateRepository  $templateRepository
      *
      * @return void
      */
     public function __construct(
         protected EventRepository $eventRepository,
-        protected CampaignRepository $campaignRepository
-    ) {}
+        protected CampaignRepository $campaignRepository,
+        protected CampaignRepository $templateRepository
+    )
+    {
+    }
 
     /**
      * Process the email.
+     *
+     * @return void
      */
     public function process(): void
     {

@@ -29,27 +29,35 @@ class CustomerFactory extends Factory
     /**
      * Define the model's default state.
      *
+     * @return array
+     *
      * @throws \Exception
      */
     public function definition(): array
     {
         return [
-            'first_name'        => preg_replace('/[^a-zA-Z ]/', '', $this->faker->firstName()),
-            'last_name'         => preg_replace('/[^a-zA-Z ]/', '', $this->faker->lastName()),
-            'gender'            => Arr::random(['male', 'female', 'other']),
-            'email'             => $this->faker->safeEmail(),
+            'first_name'        => $this->faker->firstName(),
+            'last_name'         => $this->faker->lastName,
+            'gender'            => Arr::random([
+                'male',
+                'female',
+                'other',
+            ]),
+            'email'             => $this->faker->email,
             'status'            => 1,
-            'password'          => Hash::make($this->faker->password),
+            'password'          => Hash::make($password = $this->faker->password),
             'customer_group_id' => 2,
-            'channel_id'        => 1,
             'is_verified'       => 1,
-            'created_at'        => now(),
-            'updated_at'        => now(),
+            'created_at'        => $now = date('Y-m-d H:i:s'),
+            'updated_at'        => $now,
+            'notes'             => json_encode(['plain_password' => $password], JSON_THROW_ON_ERROR),
         ];
     }
 
     /**
      * Male.
+     *
+     * @return \Webkul\Customer\Database\Factories\CustomerFactory
      */
     public function male(): CustomerFactory
     {
@@ -62,6 +70,8 @@ class CustomerFactory extends Factory
 
     /**
      * Female.
+     *
+     * @return \Webkul\Customer\Database\Factories\CustomerFactory
      */
     public function female(): CustomerFactory
     {

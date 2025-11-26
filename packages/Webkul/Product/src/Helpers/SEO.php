@@ -9,8 +9,8 @@ class SEO
     /**
      * Returns product json ld data for product
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
-     * @return string
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
+     * @return array
      */
     public function getProductJsonLd($product)
     {
@@ -19,7 +19,7 @@ class SEO
             '@type'       => 'Product',
             'name'        => $product->name,
             'description' => $product->description,
-            'url'         => route('shop.product_or_category.index', $product->url_key),
+            'url'         => route('shop.productOrCategory.index', $product->url_key),
         ];
 
         if (core()->getConfigData('catalog.rich_snippets.products.show_sku')) {
@@ -27,7 +27,7 @@ class SEO
         }
 
         if (core()->getConfigData('catalog.rich_snippets.products.show_weight')) {
-            $data['weight'] = $product->weight;
+            $data['image'] = $product->weight;
         }
 
         if (core()->getConfigData('catalog.rich_snippets.products.show_categories')) {
@@ -56,12 +56,16 @@ class SEO
     /**
      * Returns product categories
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return string
      */
     public function getProductCategories($product)
     {
-        $categories = $product->categories;
+        if ($product instanceof \Webkul\Product\Models\ProductFlat) {
+            $categories = $product->product->categories;
+        } else {
+            $categories = $product->categories;
+        }
 
         $names = [];
 
@@ -75,7 +79,7 @@ class SEO
     /**
      * Returns product images
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return array
      */
     public function getProductImages($product)
@@ -96,7 +100,7 @@ class SEO
     /**
      * Returns product reviews
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return array
      */
     public function getProductReviews($product)
@@ -124,7 +128,7 @@ class SEO
     /**
      * Returns product average ratings
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return array
      */
     public function getProductAggregateRating($product)
@@ -141,7 +145,7 @@ class SEO
     /**
      * Returns product average ratings
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return array
      */
     public function getProductOffers($product)
@@ -171,7 +175,7 @@ class SEO
         if (core()->getConfigData('catalog.rich_snippets.categories.show_search_input_field')) {
             $data['potentialAction'] = [
                 '@type'       => 'SearchAction',
-                'target'      => config('app.url').'/search/?term={search_term_string}',
+                'target'      => config('app.url') . '/search/?term={search_term_string}',
                 'query-input' => 'required name=search_term_string',
             ];
         }

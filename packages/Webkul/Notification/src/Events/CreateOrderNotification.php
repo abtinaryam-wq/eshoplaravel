@@ -23,7 +23,7 @@ class CreateOrderNotification implements ShouldBroadcast
     }
 
     /**
-     * Separate queue.
+     * Seperate queue.
      *
      * Command: `php artisan queue:work --queue=broadcastable`
      *

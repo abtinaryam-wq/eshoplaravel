@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateLocalesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,6 @@ return new class extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->enum('direction', ['ltr', 'rtl'])->default('ltr');
             $table->timestamps();
         });
     }
@@ -31,4 +30,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('locales');
     }
-};
+}

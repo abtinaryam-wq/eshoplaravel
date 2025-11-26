@@ -2,47 +2,33 @@
 
 namespace Webkul\BookingProduct\Helpers;
 
-use Carbon\Carbon;
-
 class TableSlot extends Booking
 {
     /**
-     * Return the item if it has a quantity.
-     *
-     * @param  \Webkul\Checkout\Contracts\CartItem  $cartItem
+     * @param  \Webkul\Checkout\Contracts\CartItem|array  $cartItem
+     * @return bool
      */
-    public function isItemHaveQuantity($cartItem): bool
+    public function isItemHaveQuantity($cartItem)
     {
         $bookingProduct = $this->bookingProductRepository->findOneByField('product_id', $cartItem['product_id']);
-
-        if (! $bookingProduct) {
-            return false;
-        }
-
-        $tableSlot = $bookingProduct->table_slot;
-
-        $preventDays = $tableSlot->prevent_scheduling_before ?? 0;
-
-        $minAllowedDate = Carbon::now()->addDays($preventDays)->format('Y-m-d');
-
-        $bookingDate = $cartItem['additional']['booking']['date'] ?? null;
-
-        if ($bookingDate && $bookingDate < $minAllowedDate) {
-            return false;
-        }
 
         $bookedQty = $this->getBookedQuantity($cartItem);
 
         $requestedQty = $cartItem['quantity'];
 
-        if ($tableSlot->price_type == 'table') {
-            $multiplier = $tableSlot->guest_limit;
+        if ($bookingProduct->table_slot->price_type == 'table') {
+            $requestedQty *= $bookingProduct->table_slot->guest_limit;
 
-            $requestedQty *= $multiplier;
-
-            $bookedQty *= $multiplier;
+            $bookedQty *= $bookingProduct->table_slot->guest_limit;
         }
 
-        return $bookingProduct->qty - $bookedQty >= $requestedQty && ! $this->isSlotExpired($cartItem);
+        if (
+            $bookingProduct->qty - $bookedQty < $requestedQty
+            || $this->isSlotExpired($cartItem)
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateCartShippingRatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,6 @@ return new class extends Migration
      */
     public function up()
     {
-        /**
-         * To Do (@devansh-webkul)
-         *
-         * - On delete cascade for `cart_address_id`.
-         */
         Schema::create('cart_shipping_rates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('carrier');
@@ -27,10 +22,8 @@ return new class extends Migration
             $table->string('method_description')->nullable();
             $table->double('price')->default(0)->nullable();
             $table->double('base_price')->default(0)->nullable();
-            $table->decimal('discount_amount', 12, 4)->default(0);
-            $table->decimal('base_discount_amount', 12, 4)->default(0);
-            $table->boolean('is_calculate_tax')->default(true);
             $table->integer('cart_address_id')->nullable()->unsigned();
+            $table->foreign('cart_address_id')->references('id')->on('cart_address')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -44,4 +37,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('cart_shipping_rates');
     }
-};
+}

@@ -2,16 +2,17 @@
 
 namespace Webkul\BookingProduct\Repositories;
 
-use Webkul\BookingProduct\Contracts\BookingProductDefaultSlot;
 use Webkul\Core\Eloquent\Repository;
 
 class BookingProductDefaultSlotRepository extends Repository
 {
     /**
      * Specify Model class name
+     *
+     * @return string
      */
-    public function model(): string
+    function model(): string
     {
-        return BookingProductDefaultSlot::class;
+        return 'Webkul\BookingProduct\Contracts\BookingProductDefaultSlot';
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 return [
     'cashondelivery'  => [
         'code'        => 'cashondelivery',
@@ -17,5 +16,5 @@ return [
         'class'       => 'Webkul\Payment\Payment\MoneyTransfer',
         'active'      => true,
         'sort'        => 2,
-    ],
+    ]
 ];

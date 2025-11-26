@@ -2,5 +2,5 @@
 
 return [
     'name'    => 'Webkul Bagisto Shop',
-    'version' => core()->version(),
+    'version' => '0.0.1',
 ];

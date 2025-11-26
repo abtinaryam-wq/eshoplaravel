@@ -8,8 +8,10 @@ class CartRuleCouponUsageRepository extends Repository
 {
     /**
      * Specify Model class name
+     *
+     * @return string
      */
-    public function model(): string
+    function model(): string
     {
         return 'Webkul\CartRule\Contracts\CartRuleCouponUsage';
     }

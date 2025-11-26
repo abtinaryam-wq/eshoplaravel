@@ -2,46 +2,34 @@
 
 namespace Webkul\Admin\Listeners;
 
-use Webkul\Admin\Mail\Order\CanceledNotification;
-use Webkul\Admin\Mail\Order\CreatedNotification;
-use Webkul\Sales\Contracts\Order as OrderContract;
+use Webkul\Admin\Traits\Mails;
+use Webkul\Paypal\Payment\SmartButton;
 
-class Order extends Base
+class Order
 {
-    /**
-     * After order is created
-     *
-     * @return void
-     */
-    public function afterCreated(OrderContract $order)
+    use Mails;
+
+    public function refundOrder($refund)
     {
-        try {
-            if (! core()->getConfigData('emails.general.notifications.emails.general.notifications.new_order_mail_to_admin')) {
-                return;
-            }
+        $order = $refund->order;
 
-            $this->prepareMail($order, new CreatedNotification($order));
-        } catch (\Exception $e) {
-            report($e);
-        }
-    }
+        if ($order->payment->method === 'paypal_smart_button') {
+            /* getting smart button instance */
+            $smartButton = new SmartButton;
 
-    /**
-     * Send cancel order mail.
-     *
-     * @param  \Webkul\Sales\Contracts\Order  $order
-     * @return void
-     */
-    public function afterCanceled($order)
-    {
-        try {
-            if (! core()->getConfigData('emails.general.notifications.emails.general.notifications.cancel_order_mail_to_admin')) {
-                return;
-            }
+            /* getting paypal oder id */
+            $paypalOrderID = $order->payment->additional['orderID'];
 
-            $this->prepareMail($order, new CanceledNotification($order));
-        } catch (\Exception $e) {
-            report($e);
+            /* getting capture id by paypal order id */
+            $captureID = $smartButton->getCaptureId($paypalOrderID);
+
+            /* now refunding order on the basis of capture id and refund data */
+            $smartButton->refundOrder($captureID, [
+                'amount' => [
+                    'value'         => $refund->grand_total,
+                    'currency_code' => $refund->order_currency_code,
+                ],
+            ]);
         }
     }
 }

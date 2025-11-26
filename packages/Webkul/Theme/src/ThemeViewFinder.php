@@ -2,96 +2,63 @@
 
 namespace Webkul\Theme;
 
+use Webkul\Theme\Facades\Themes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\FileViewFinder;
-use Webkul\Theme\Facades\Themes;
 
 class ThemeViewFinder extends FileViewFinder
 {
     /**
-     * The namespace for admin package views.
-     *
-     * @var string
-     */
-    public const ADMIN_PACKAGE_VIEWS_NAMESPACE = 'admin';
-
-    /**
-     * The namespace for shop package views.
-     *
-     * @var string
-     */
-    public const SHOP_PACKAGE_VIEWS_NAMESPACE = 'shop';
-
-    /**
-     * Find a namespaced view considering the active theme.
+     * Override findNamespacedView() to add "resources/themes/theme_name/views/..." paths
      *
      * @param  string  $name
      * @return string
      */
     protected function findNamespacedView($name)
     {
-        [$namespace, $view] = $this->parseNamespaceSegments($name);
-
-        $isAdmin = Str::contains(request()->url(), config('app.admin_url').'/');
-
-        $this->setActiveTheme($isAdmin);
-
-        $paths = $this->addThemeNamespacePaths($namespace);
-
-        try {
-            return $this->findInPaths($view, $paths);
-        } catch (\Exception $e) {
-            $view = $this->getThemedViewName($namespace, $view, $isAdmin);
-
-            return $this->findInPaths($view, $paths);
-        }
-    }
-
-    /**
-     * Sets the active theme depending on request context.
-     */
-    protected function setActiveTheme(bool $isAdmin)
-    {
-        if ($isAdmin) {
-            themes()->set(config('themes.admin-default'));
-        }
-    }
-
-    /**
-     * Get the theme-specific view name if not found on first try.
-     *
-     * @param  string  $namespace
-     * @param  string  $view
-     * @param  bool  $isAdmin
-     * @return string
-     */
-    protected function getThemedViewName($namespace, $view, $isAdmin)
-    {
-        $themeCode = themes()->current()?->code;
+        // Extract the $view and the $namespace parts
+        list($namespace, $view) = $this->parseNamespaceSegments($name);
 
         if (
-            ! $isAdmin
-            && $namespace !== self::SHOP_PACKAGE_VIEWS_NAMESPACE
-            && Str::contains($view, 'shop.')
+            request()->route() !== null
+            && ! Str::contains(request()->route()->uri, config('app.admin_url') . '/')
         ) {
-            return Str::replaceFirst('shop.', "shop.$themeCode.", $view);
-        }
+            $paths = $this->addThemeNamespacePaths($namespace);
 
-        if (
-            $isAdmin
-            && $namespace !== self::ADMIN_PACKAGE_VIEWS_NAMESPACE
-            && Str::contains($view, 'admin.')
-        ) {
-            return Str::replaceFirst('admin.', "admin.$themeCode.", $view);
-        }
+            try {
+                return $this->findInPaths($view, $paths);
+            } catch(\Exception $e) {
+                if ($namespace !== 'shop') {
+                    if (strpos($view, 'shop.') !== false) {
+                        $view = str_replace('shop.', 'shop.' . Themes::current()->code . '.', $view);
+                    }
+                }
 
-        return $view;
+                return $this->findInPaths($view, $paths);
+            }
+        } else {
+            $themes = app('themes');
+
+            $themes->set(config('themes.admin-default'));
+
+            $paths = $this->addThemeNamespacePaths($namespace);
+
+            try {
+                return $this->findInPaths($view, $paths);
+            } catch(\Exception $e) {
+                if ($namespace != 'admin') {
+                    if (strpos($view, 'admin.') !== false) {
+                        $view = str_replace('admin.', 'admin.' . Themes::current()->code . '.', $view);
+                    }
+                }
+
+                return $this->findInPaths($view, $paths);
+            }
+        }
     }
 
     /**
-     * Add possible paths for this namespace, including theme overlays.
-     *
      * @param  string  $namespace
      * @return array
      */
@@ -101,40 +68,23 @@ class ThemeViewFinder extends FileViewFinder
             return [];
         }
 
-        $paths = [];
-
-        $theme = themes()->current();
-
-        if (
-            $theme
-            && $theme->code !== 'default'
-            && in_array($namespace, [
-                self::SHOP_PACKAGE_VIEWS_NAMESPACE,
-                self::ADMIN_PACKAGE_VIEWS_NAMESPACE,
-            ])
-        ) {
-            $themeNamespace = $theme->viewsNamespace ?? $theme->code;
-
-            if (isset($this->hints[$themeNamespace])) {
-                $paths = [...$this->hints[$themeNamespace]];
-            }
-        }
-
-        $paths = [...$paths, ...$this->hints[$namespace]];
+        $paths = $this->hints[$namespace];
 
         $searchPaths = array_diff($this->paths, Themes::getLaravelViewPaths());
 
         foreach (array_reverse($searchPaths) as $path) {
-            $paths = Arr::prepend($paths, base_path($path));
+            $newPath = base_path() . '/' . $path;
+
+            $paths = Arr::prepend($paths, $newPath);
         }
 
         return $paths;
     }
 
     /**
-     * Add paths for custom error/mails pages in the theme.
+     * Override replaceNamespace() to add path for custom error pages "resources/themes/theme_name/views/errors/..."
      *
-     * @param  string  $namespace
+     * @param  string        $namespace
      * @param  string|array  $hints
      * @return void
      */
@@ -142,17 +92,26 @@ class ThemeViewFinder extends FileViewFinder
     {
         $this->hints[$namespace] = (array) $hints;
 
-        if (in_array($namespace, ['errors', 'mails'])) {
+        // Overide Error Pages
+        if (
+            $namespace == 'errors'
+            || $namespace == 'mails'
+        ) {
             $searchPaths = array_diff($this->paths, Themes::getLaravelViewPaths());
 
-            $addPaths = array_map(fn ($path) => base_path("$path/$namespace"), $searchPaths);
+            $addPaths = array_map(function ($path) use ($namespace) {
+                return base_path() . '/' . "$path/$namespace";
+            }, $searchPaths);
 
             $this->prependNamespace($namespace, $addPaths);
         }
     }
 
     /**
-     * Set base paths and clear cache.
+     * Set the array of paths where the views are being searched.
+     *
+     * @param  array  $paths
+     * @return void
      */
     public function setPaths($paths)
     {

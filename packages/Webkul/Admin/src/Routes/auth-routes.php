@@ -2,46 +2,50 @@
 
 use Illuminate\Support\Facades\Route;
 use Webkul\Admin\Http\Controllers\Controller;
-use Webkul\Admin\Http\Controllers\User\ForgetPasswordController;
-use Webkul\Admin\Http\Controllers\User\ResetPasswordController;
-use Webkul\Admin\Http\Controllers\User\SessionController;
+use Webkul\User\Http\Controllers\ForgetPasswordController;
+use Webkul\User\Http\Controllers\ResetPasswordController;
+use Webkul\User\Http\Controllers\SessionController;
 
 /**
  * Auth routes.
  */
-Route::group(['prefix' => config('app.admin_url')], function () {
+Route::group(['middleware' => ['web'], 'prefix' => config('app.admin_url')], function () {
     /**
      * Redirect route.
      */
     Route::get('/', [Controller::class, 'redirectToLogin']);
 
-    Route::controller(SessionController::class)->prefix('login')->group(function () {
-        /**
-         * Login routes.
-         */
-        Route::get('', 'create')->name('admin.session.create');
+    /**
+     * Login routes.
+     */
+    Route::get('/login', [SessionController::class, 'create'])->defaults('_config', [
+        'view' => 'admin::users.sessions.create',
+    ])->name('admin.session.create');
 
-        /**
-         * Login post route to admin auth controller.
-         */
-        Route::post('', 'store')->name('admin.session.store');
-    });
+    /**
+     * Login post route to admin auth controller.
+     */
+    Route::post('/login', [SessionController::class, 'store'])->defaults('_config', [
+        'redirect' => 'admin.dashboard.index',
+    ])->name('admin.session.store');
 
     /**
      * Forget password routes.
      */
-    Route::controller(ForgetPasswordController::class)->prefix('forget-password')->group(function () {
-        Route::get('', 'create')->name('admin.forget_password.create');
+    Route::get('/forget-password', [ForgetPasswordController::class, 'create'])->defaults('_config', [
+        'view' => 'admin::users.forget-password.create',
+    ])->name('admin.forget-password.create');
 
-        Route::post('', 'store')->name('admin.forget_password.store');
-    });
+    Route::post('/forget-password', [ForgetPasswordController::class, 'store'])->name('admin.forget-password.store');
 
     /**
      * Reset password routes.
      */
-    Route::controller(ResetPasswordController::class)->prefix('reset-password')->group(function () {
-        Route::get('{token}', 'create')->name('admin.reset_password.create');
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'create'])->defaults('_config', [
+        'view' => 'admin::users.reset-password.create',
+    ])->name('admin.reset-password.create');
 
-        Route::post('', 'store')->name('admin.reset_password.store');
-    });
+    Route::post('/reset-password', [ResetPasswordController::class, 'store'])->defaults('_config', [
+        'redirect' => 'admin.dashboard.index',
+    ])->name('admin.reset-password.store');
 });

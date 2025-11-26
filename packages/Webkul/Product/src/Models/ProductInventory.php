@@ -3,12 +3,12 @@
 namespace Webkul\Product\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Webkul\Inventory\Models\InventorySourceProxy;
-use Webkul\Product\Contracts\ProductInventory as ProductInventoryContract;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Webkul\Product\Database\Factories\ProductInventoryFactory;
+use Webkul\Product\Contracts\ProductInventory as ProductInventoryContract;
 
 class ProductInventory extends Model implements ProductInventoryContract
 {
@@ -41,6 +41,8 @@ class ProductInventory extends Model implements ProductInventoryContract
 
     /**
      * Create a new factory instance for the model.
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

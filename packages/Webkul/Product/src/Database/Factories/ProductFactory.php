@@ -21,15 +21,15 @@ class ProductFactory extends Factory
      */
     protected $states = [
         'simple',
-        'configurable',
         'virtual',
-        'grouped',
         'downloadable',
-        'bundle',
+        'booking',
     ];
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {
@@ -39,9 +39,6 @@ class ProductFactory extends Factory
         ];
     }
 
-    /**
-     * Simple state.
-     */
     public function simple(): ProductFactory
     {
         return $this->state(function (array $attributes) {
@@ -51,9 +48,6 @@ class ProductFactory extends Factory
         });
     }
 
-    /**
-     * Virtual state.
-     */
     public function virtual(): ProductFactory
     {
         return $this->state(function (array $attributes) {
@@ -63,33 +57,6 @@ class ProductFactory extends Factory
         });
     }
 
-    /**
-     * Grouped state.
-     */
-    public function grouped(): ProductFactory
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'type' => 'grouped',
-            ];
-        });
-    }
-
-    /**
-     * Configurable state.
-     */
-    public function configurable(): ProductFactory
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'type' => 'configurable',
-            ];
-        });
-    }
-
-    /**
-     * Downloadable state.
-     */
     public function downloadable(): ProductFactory
     {
         return $this->state(function (array $attributes) {
@@ -99,14 +66,11 @@ class ProductFactory extends Factory
         });
     }
 
-    /**
-     * Bundle state.
-     */
-    public function bundle(): ProductFactory
+    public function booking(): ProductFactory
     {
         return $this->state(function (array $attributes) {
             return [
-                'type' => 'bundle',
+                'type' => 'booking',
             ];
         });
     }

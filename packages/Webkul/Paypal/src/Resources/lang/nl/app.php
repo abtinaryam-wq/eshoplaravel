@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'errors' => [
-        'invalid-configs'      => 'Het lijkt erop dat er een configuratieprobleem is met de PayPal-betalingsmethode. Neem contact op met de winkelier voor hulp.',
-        'something-went-wrong' => 'Er is iets misgegaan met de PayPal-betalingsmethode. Neem contact op met de winkelier voor hulp.',
-    ],
+    'error' => [
+        'universal-error' => 'Er is iets fout gegaan!',
+        'sdk-validation-error' => 'Client-ID wordt niet herkend voor productie of sandbox!',
+        'authorization-error' => 'Client-ID en Client Secret moeten geldig zijn!'
+    ]
 ];

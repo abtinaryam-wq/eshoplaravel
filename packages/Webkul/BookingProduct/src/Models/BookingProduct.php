@@ -2,18 +2,17 @@
 
 namespace Webkul\BookingProduct\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Webkul\BookingProduct\Contracts\BookingProduct as BookingProductContract;
 use Webkul\Product\Models\ProductProxy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Webkul\BookingProduct\Database\Factories\BookingProductFactory;
+use Webkul\BookingProduct\Contracts\BookingProduct as BookingProductContract;
 
 class BookingProduct extends Model implements BookingProductContract
 {
-    /**
-     * The attributes that are mass assignable.
-     */
+    use HasFactory;
+
     protected $fillable = [
         'location',
         'show_location',
@@ -25,9 +24,6 @@ class BookingProduct extends Model implements BookingProductContract
         'product_id',
     ];
 
-    /**
-     * The relations to eager load on every query.
-     */
     protected $with = [
         'default_slot',
         'appointment_slot',
@@ -36,9 +32,6 @@ class BookingProduct extends Model implements BookingProductContract
         'table_slot',
     ];
 
-    /**
-     * The attributes that should be cast.
-     */
     protected $casts = [
         'available_from' => 'datetime',
         'available_to'   => 'datetime',
@@ -47,7 +40,7 @@ class BookingProduct extends Model implements BookingProductContract
     /**
      * The Product Default Booking that belong to the product booking.
      */
-    public function default_slot(): HasOne
+    public function default_slot(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(BookingProductDefaultSlotProxy::modelClass());
     }
@@ -55,7 +48,7 @@ class BookingProduct extends Model implements BookingProductContract
     /**
      * The Product Appointment Booking that belong to the product booking.
      */
-    public function appointment_slot(): HasOne
+    public function appointment_slot(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(BookingProductAppointmentSlotProxy::modelClass());
     }
@@ -63,7 +56,7 @@ class BookingProduct extends Model implements BookingProductContract
     /**
      * The Product Event Booking that belong to the product booking.
      */
-    public function event_tickets(): HasMany
+    public function event_tickets(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(BookingProductEventTicketProxy::modelClass());
     }
@@ -71,7 +64,7 @@ class BookingProduct extends Model implements BookingProductContract
     /**
      * The Product Rental Booking that belong to the product booking.
      */
-    public function rental_slot(): HasOne
+    public function rental_slot(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(BookingProductRentalSlotProxy::modelClass());
     }
@@ -79,15 +72,25 @@ class BookingProduct extends Model implements BookingProductContract
     /**
      * The Product Table Booking that belong to the product booking.
      */
-    public function table_slot(): HasOne
+    public function table_slot(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(BookingProductTableSlotProxy::modelClass());
     }
 
     /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return BookingProductFactory::new();
+    }
+
+    /**
      * The Product belong to the product booking.
      */
-    public function product(): BelongsTo
+    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(ProductProxy::modelClass());
     }

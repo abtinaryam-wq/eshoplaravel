@@ -3,25 +3,20 @@
 namespace Webkul\Sales\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Webkul\Product\Type\AbstractType;
-use Webkul\Sales\Contracts\OrderItem as OrderItemContract;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Webkul\Sales\Database\Factories\OrderItemFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Webkul\Sales\Contracts\OrderItem as OrderItemContract;
 
 class OrderItem extends Model implements OrderItemContract
 {
     use HasFactory;
 
-    /**
-     * Define the guarded property.
-     *
-     * @var array
-     */
     protected $guarded = [
         'id',
         'child',
@@ -30,24 +25,16 @@ class OrderItem extends Model implements OrderItemContract
         'updated_at',
     ];
 
-    /**
-     * Casts the additional column to the model.
-     *
-     * @var array
-     */
     protected $casts = [
         'additional' => 'array',
     ];
 
-    /**
-     * Define the type instance
-     *
-     * @var mixed
-     */
     protected $typeInstance;
 
     /**
      * Retrieve type instance
+     *
+     * @return AbstractType
      */
     public function getTypeInstance(): AbstractType
     {
@@ -55,15 +42,18 @@ class OrderItem extends Model implements OrderItemContract
             return $this->typeInstance;
         }
 
-        $this->typeInstance = app(config('product_types.'.$this->type.'.class'));
+        $this->typeInstance = app(config('product_types.' . $this->type . '.class'));
 
         if ($this->product) {
-            $this->typeInstance->setProduct($this->product);
+            $this->typeInstance->setProduct($this);
         }
 
         return $this->typeInstance;
     }
 
+    /**
+     * @return bool
+     */
     public function isStockable(): bool
     {
         return $this->getTypeInstance()->isStockable();
@@ -213,13 +203,12 @@ class OrderItem extends Model implements OrderItemContract
         return $this->hasMany(DownloadableLinkPurchasedProxy::modelClass());
     }
 
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         $array = parent::toArray();
-
-        if (! $this->id) {
-            return $array;
-        }
 
         $array['qty_to_ship'] = $this->qty_to_ship;
 
@@ -229,15 +218,15 @@ class OrderItem extends Model implements OrderItemContract
 
         $array['qty_to_refund'] = $this->qty_to_refund;
 
-        if ($this->type == 'downloadable') {
-            $array['downloadable_links'] = $this->downloadable_link_purchased;
-        }
+        $array['downloadable_links'] = $this->downloadable_link_purchased;
 
         return $array;
     }
 
     /**
      * Create a new factory instance for the model.
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

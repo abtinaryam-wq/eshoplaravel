@@ -1,29 +1,34 @@
-<x-admin::layouts>
-    <x-slot:title>
-        @lang('admin::app.catalog.attributes.index.title')
-    </x-slot>
+@extends('admin::layouts.content')
 
-    <div class="flex items-center justify-between gap-4 max-sm:flex-wrap">
-        <!-- Title -->
-        <p class="text-xl font-bold text-gray-800 dark:text-white">
-            @lang('admin::app.catalog.attributes.index.title')
-        </p>
+@section('page_title')
+    {{ __('admin::app.catalog.attributes.title') }}
+@stop
 
-        <div class="flex items-center gap-x-2.5">
-            @if (bouncer()->hasPermission('catalog.attributes.create'))
-                <a href="{{ route('admin.catalog.attributes.create') }}">
-                    <div class="primary-button">
-                        @lang('admin::app.catalog.attributes.index.create-btn')
-                    </div>
-                </a>
-            @endif
+@section('content')
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h1>{{ __('admin::app.catalog.attributes.title') }}</h1>
+            </div>
+
+            <div class="page-action">
+                @if (bouncer()->hasPermission('catalog.attributes.create'))
+                    <a
+                        href="{{ route('admin.catalog.attributes.create') }}"
+                        class="btn btn-lg btn-primary"
+                    >
+                        {{ __('admin::app.catalog.attributes.add-title') }}
+                    </a>
+                @endif
+            </div>
         </div>
+
+        {!! view_render_event('bagisto.admin.catalog.attributes.list.before') !!}
+
+        <div class="page-content">
+            <datagrid-plus src="{{ route('admin.catalog.attributes.index') }}"></datagrid-plus>
+        </div>
+
+        {!! view_render_event('bagisto.admin.catalog.attributes.list.after') !!}
     </div>
-
-    {!! view_render_event('bagisto.admin.catalog.attributes.list.before') !!}
-
-    <x-admin::datagrid :src="route('admin.catalog.attributes.index')" />
-
-    {!! view_render_event('bagisto.admin.catalog.attributes.list.after') !!}
-
-</x-admin::layouts>
+@stop

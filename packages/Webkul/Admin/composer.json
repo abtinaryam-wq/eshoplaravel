@@ -1,14 +1,17 @@
 {
     "name": "bagisto/laravel-admin",
     "license": "MIT",
-    "description" : "Admin package",
     "authors": [
         {
-            "name": "Bagisto",
-            "email": "support@bagisto.com"
+            "name": "Jitendra Singh",
+            "email": "jitendra@webkul.com"
         }
     ],
-    "require": {},
+    "require": {
+        "bagisto/laravel-user": "dev-master",
+        "bagisto/laravel-ui": "dev-master",
+        "bagisto/laravel-core": "dev-master"
+    },
     "autoload": {
         "psr-4": {
             "Webkul\\Admin\\": "src/"

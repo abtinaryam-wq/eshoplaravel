@@ -2,23 +2,13 @@
 
 namespace Webkul\Marketing\Models;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Core\Models\ChannelProxy;
 use Webkul\Customer\Models\CustomerGroupProxy;
 use Webkul\Marketing\Contracts\Campaign as CampaignContract;
-use Webkul\Marketing\Database\Factories\CampaignFactory;
 
 class Campaign extends Model implements CampaignContract
 {
-    use HasFactory;
-
-    /**
-     * Define the table name for the model
-     *
-     * @var string
-     */
     protected $table = 'marketing_campaigns';
 
     /**
@@ -67,13 +57,5 @@ class Campaign extends Model implements CampaignContract
     public function email_template()
     {
         return $this->belongsTo(TemplateProxy::modelClass(), 'marketing_template_id');
-    }
-
-    /**
-     * Create a new factory instance for the model.
-     */
-    protected static function newFactory(): Factory
-    {
-        return CampaignFactory::new();
     }
 }

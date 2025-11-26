@@ -2,27 +2,23 @@
 
 namespace Webkul\BookingProduct\Models;
 
-use Webkul\BookingProduct\Contracts\BookingProductEventTicket as BookingProductEventTicketContract;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Webkul\Core\Eloquent\TranslatableModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Webkul\BookingProduct\Database\Factories\BookingProductEventTicketFactory;
+use Webkul\BookingProduct\Contracts\BookingProductEventTicket as BookingProductEventTicketContract;
 
 class BookingProductEventTicket extends TranslatableModel implements BookingProductEventTicketContract
 {
-    /**
-     * Indicates if the model should be timestamped.
-     */
+    use HasFactory;
+
     public $timestamps = false;
 
-    /**
-     * Summary of translatedAttributes
-     */
     public $translatedAttributes = [
         'name',
         'description',
     ];
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'price',
         'qty',
@@ -31,4 +27,14 @@ class BookingProductEventTicket extends TranslatableModel implements BookingProd
         'special_price_to',
         'booking_product_id',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return Factory
+     */
+    protected static function newFactory(): Factory
+    {
+        return BookingProductEventTicketFactory::new();
+    }
 }

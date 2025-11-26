@@ -9,13 +9,7 @@ class AttributeGroup extends Model implements AttributeGroupContract
 {
     public $timestamps = false;
 
-    protected $fillable = [
-        'code',
-        'name',
-        'column',
-        'position',
-        'is_user_defined',
-    ];
+    protected $fillable = ['name', 'position', 'is_user_defined'];
 
     /**
      * Get the attributes that owns the attribute group.

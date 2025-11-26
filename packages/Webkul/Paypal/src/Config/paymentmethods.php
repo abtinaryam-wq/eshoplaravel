@@ -1,5 +1,4 @@
 <?php
-
 return [
     'paypal_smart_button' => [
         'code'             => 'paypal_smart_button',
@@ -9,7 +8,7 @@ return [
         'class'            => 'Webkul\Paypal\Payment\SmartButton',
         'sandbox'          => true,
         'active'           => true,
-        'sort'             => 4,
+        'sort'             => 0,
     ],
 
     'paypal_standard' => [

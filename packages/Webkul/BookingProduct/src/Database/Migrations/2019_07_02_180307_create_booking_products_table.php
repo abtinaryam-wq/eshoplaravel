@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateBookingProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,19 +15,16 @@ return new class extends Migration
     {
         Schema::create('booking_products', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('product_id');
             $table->string('type');
             $table->integer('qty')->default(0)->nullable();
             $table->string('location')->nullable();
-            $table->boolean('show_location')->default(false);
+            $table->boolean('show_location')->default(0);
             $table->boolean('available_every_week')->nullable();
-            $table->dateTime('available_from')->nullable();
-            $table->dateTime('available_to')->nullable();
+            $table->date('available_from')->nullable();
+            $table->date('available_to')->nullable();
 
-            $table->foreign('product_id')
-                ->references('id')->on('products')
-                ->cascadeOnDelete();
-
+            $table->integer('product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -41,4 +38,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('booking_products');
     }
-};
+}

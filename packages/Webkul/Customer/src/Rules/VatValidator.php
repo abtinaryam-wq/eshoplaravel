@@ -5,13 +5,12 @@ namespace Webkul\Customer\Rules;
 class VatValidator
 {
     /**
-     * Regular expression patterns per country code.
+     * Regular expression patterns per country code
      *
      * @var array
-     *
      * @link http://ec.europa.eu/taxation_customs/vies/faq.html?locale=en#item_11
      */
-    protected static $pattern_expression = [
+    protected static $pattern_expression = array(
         'AT' => 'U[A-Z\d]{8}',
         'AE' => '\d{15}',
         'BE' => '(0\d{9}|\d{10})',
@@ -43,43 +42,41 @@ class VatValidator
         'SI' => '\d{8}',
         'SK' => '\d{10}',
         'JP' => '\d{12}|\d{13}',
-    ];
+    );
 
     /**
      * Validate a VAT number format.
      *
-     * @param  ?string  $formCountry  country code from the input form - used as backup if the VAT number does not contain a country code
+     * @param  string  $vatNumber
+     * @return boolean
      */
-    public function validate(string $vatNumber, ?string $formCountry = null): bool
+    public function validate(string $vatNumber): bool
     {
         $vatNumber = $this->vatCleaner($vatNumber);
 
-        [$country, $number] = $this->splitVat($vatNumber);
+        list($country, $number) = $this->splitVat($vatNumber);
 
         if (! isset(self::$pattern_expression[$country])) {
-            if (! $formCountry) {
-                return false;
-            }
-
-            $country = $formCountry;
-            $number = $vatNumber;
+            return false;
         }
-
-        return preg_match('/^'.self::$pattern_expression[$country].'$/', $number) > 0;
+        
+        return preg_match('/^' . self::$pattern_expression[$country] . '$/', $number) > 0;
     }
 
     /**
-     * Vat number cleaner.
+     * @param  string  $vatNumber
+     * @return string
      */
     private function vatCleaner(string $vatNumber): string
     {
-        $vatNumberClean = preg_replace('/[^A-Z0-9]/i', '', $vatNumber);
-
-        return strtoupper($vatNumberClean);
+        $vatNumber_no_spaces = trim($vatNumber);
+        
+        return strtoupper($vatNumber_no_spaces);
     }
 
     /**
-     * Split the VAT number into country code and number.
+     * @param  string  $vatNumber
+     * @return array
      */
     private function splitVat(string $vatNumber): array
     {

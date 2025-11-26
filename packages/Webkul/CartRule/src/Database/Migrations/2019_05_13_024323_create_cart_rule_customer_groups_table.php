@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateCartRuleCustomerGroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,9 @@ return new class extends Migration
             $table->integer('cart_rule_id')->unsigned();
             $table->integer('customer_group_id')->unsigned();
 
+            
             $table->primary(['cart_rule_id', 'customer_group_id']);
+            
             $table->foreign('cart_rule_id')->references('id')->on('cart_rules')->onDelete('cascade');
             $table->foreign('customer_group_id')->references('id')->on('customer_groups')->onDelete('cascade');
         });
@@ -32,4 +34,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('cart_rule_customer_groups');
     }
-};
+}

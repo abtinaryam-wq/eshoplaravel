@@ -1,21 +1,19 @@
 <?php
 
-namespace Webkul\Product\DataTypes;
+namespace Webkul\Product\Datatypes;
 
 class CartItemValidationResult
 {
-    /**
-     * @var bool
-     */
+    /** @var bool $cartIsInvalid */
     private $cartIsInvalid = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool $itemIsInactive */
     private $itemIsInactive = false;
 
     /**
      * Function to check if cart is invalid
+     *
+     * @return bool
      */
     public function isCartInvalid(): bool
     {
@@ -24,6 +22,8 @@ class CartItemValidationResult
 
     /**
      * Function to check if item is inactive
+     *
+     * @return bool
      */
     public function isItemInactive(): bool
     {

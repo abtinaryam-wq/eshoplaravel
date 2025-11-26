@@ -6,10 +6,13 @@ use Webkul\Core\Eloquent\Repository;
 
 class AttributeGroupRepository extends Repository
 {
+
     /**
      * Specify Model class name
+     *
+     * @return string
      */
-    public function model(): string
+    function model(): string
     {
         return 'Webkul\Attribute\Contracts\AttributeGroup';
     }

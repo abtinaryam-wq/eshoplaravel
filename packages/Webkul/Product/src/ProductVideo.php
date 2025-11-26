@@ -3,13 +3,14 @@
 namespace Webkul\Product;
 
 use Illuminate\Support\Facades\Storage;
+use Webkul\Product\Helpers\AbstractProduct;
 
-class ProductVideo
+class ProductVideo extends AbstractProduct
 {
     /**
      * Retrieve collection of videos
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return array
      */
     public function getVideos($product)

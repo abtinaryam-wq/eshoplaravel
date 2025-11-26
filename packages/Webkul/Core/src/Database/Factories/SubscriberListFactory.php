@@ -2,8 +2,8 @@
 
 namespace Webkul\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Webkul\Core\Models\SubscribersList;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SubscriberListFactory extends Factory
 {
@@ -16,14 +16,16 @@ class SubscriberListFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {
         return [
-            'email'         => $this->faker->safeEmail(),
-            'channel_id'    => core()->getCurrentChannel()->id,
-            'is_subscribed' => 1,
-            'token'         => uniqid(),
+            'email' => $this->faker->safeEmail,
+            'is_subscribed' => $this->faker->boolean,
+            'channel_id' => 1,
         ];
     }
 }
+

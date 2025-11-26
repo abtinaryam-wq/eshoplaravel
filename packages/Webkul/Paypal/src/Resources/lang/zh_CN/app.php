@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'errors' => [
-        'invalid-configs'      => 'PayPal支付方式的配置似乎存在问题。请联系店主以获取帮助。',
-        'something-went-wrong' => 'PayPal支付方式出现问题。请联系店主以获取帮助。',
-    ],
+    'error' => [
+        'universal-error' => '出问题了!',
+        'sdk-validation-error' => '无法识别生产或沙盒的客户端 ID!',
+        'authorization-error' => '客户端ID和客户端密码应该是有效的!'
+    ]
 ];

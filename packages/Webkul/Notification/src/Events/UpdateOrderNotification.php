@@ -17,7 +17,9 @@ class UpdateOrderNotification implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(protected $data) {}
+    public function __construct(protected $data)
+    {
+    }
 
     /**
      * Get the channels the event should broadcast on.
@@ -40,7 +42,7 @@ class UpdateOrderNotification implements ShouldBroadcast
     }
 
     /**
-     * Separate queue.
+     * Seperate queue.
      *
      * Command: `php artisan queue:work --queue=broadcastable`
      *

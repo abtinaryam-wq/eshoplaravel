@@ -1,41 +1,17 @@
-<x-shop::layouts.account>
-    <!-- Page Title -->
-    <x-slot:title>
-        @lang('shop::app.customers.account.orders.title')
-    </x-slot>
+@extends('shop::layouts.master')
 
-    <!-- Breadcrumbs -->
-    @if ((core()->getConfigData('general.general.breadcrumbs.shop')))
-        @section('breadcrumbs')
-            <x-shop::breadcrumbs name="orders" />
-        @endSection
-    @endif
-
-    <div class="mx-4">
-        <x-shop::layouts.account.navigation />
+@section('content-wrapper')
+    <div>
+        @if (request()->route()->getName() !== 'customer.profile.index')
+            @if (Breadcrumbs::exists())
+                {{ Breadcrumbs::render() }}
+            @endif
+        @endif
     </div>
 
-    <span class="mb-5 mt-2 w-full border-t border-zinc-300"></span>
+    <div class="account-content">
+        @include('shop::customers.account.partials.sidemenu')
 
-    <!--Customers logout-->
-    @auth('customer')
-        <div class="mx-4">
-            <div class="mx-auto w-[400px] rounded-lg border border-navyBlue py-2.5 text-center max-sm:w-full max-sm:py-1.5">
-                <x-shop::form
-                    method="DELETE"
-                    action="{{ route('shop.customer.session.destroy') }}"
-                    id="customerLogout"
-                />
-
-                <a
-                    class="flex items-center justify-center gap-1.5 text-base hover:bg-gray-100"
-                    href="{{ route('shop.customer.session.destroy') }}"
-                    onclick="event.preventDefault(); document.getElementById('customerLogout').submit();"
-                >
-                    @lang('shop::app.components.layouts.header.desktop.bottom.logout')
-                </a>
-            </div>
-        </div>
-    @endauth
-
-</x-shop::layouts.accounts>
+        @yield('account-content')
+    </div>
+@endsection

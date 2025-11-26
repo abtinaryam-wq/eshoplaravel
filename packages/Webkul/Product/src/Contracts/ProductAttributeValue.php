@@ -2,4 +2,6 @@
 
 namespace Webkul\Product\Contracts;
 
-interface ProductAttributeValue {}
+interface ProductAttributeValue
+{
+}

@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateCartPayment extends Migration
 {
     /**
      * Run the migrations.
@@ -18,9 +18,8 @@ return new class extends Migration
             $table->string('method');
             $table->string('method_title')->nullable();
             $table->integer('cart_id')->nullable()->unsigned();
-            $table->timestamps();
-
             $table->foreign('cart_id')->references('id')->on('cart')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -33,4 +32,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('cart_payment');
     }
-};
+}

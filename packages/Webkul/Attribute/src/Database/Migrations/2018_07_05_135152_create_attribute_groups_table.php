@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateAttributeGroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,11 +15,10 @@ return new class extends Migration
     {
         Schema::create('attribute_groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('attribute_family_id')->unsigned();
             $table->string('name');
             $table->integer('position');
             $table->boolean('is_user_defined')->default(1);
-
+            $table->integer('attribute_family_id')->unsigned();
             $table->unique(['attribute_family_id', 'name']);
             $table->foreign('attribute_family_id')->references('id')->on('attribute_families')->onDelete('cascade');
         });
@@ -28,7 +27,6 @@ return new class extends Migration
             $table->integer('attribute_id')->unsigned();
             $table->integer('attribute_group_id')->unsigned();
             $table->integer('position')->nullable();
-
             $table->primary(['attribute_id', 'attribute_group_id']);
             $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
             $table->foreign('attribute_group_id')->references('id')->on('attribute_groups')->onDelete('cascade');
@@ -46,4 +44,4 @@ return new class extends Migration
 
         Schema::dropIfExists('attribute_groups');
     }
-};
+}

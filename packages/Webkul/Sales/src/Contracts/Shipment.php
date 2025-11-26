@@ -2,4 +2,6 @@
 
 namespace Webkul\Sales\Contracts;
 
-interface Shipment {}
+interface Shipment
+{
+}

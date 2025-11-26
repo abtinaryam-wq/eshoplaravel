@@ -2,4 +2,6 @@
 
 namespace Webkul\Product\Contracts;
 
-interface ProductReview {}
+interface ProductReview
+{
+}

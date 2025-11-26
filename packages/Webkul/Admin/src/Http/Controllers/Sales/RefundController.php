@@ -2,9 +2,8 @@
 
 namespace Webkul\Admin\Http\Controllers\Sales;
 
-use Webkul\Admin\DataGrids\Sales\OrderRefundDataGrid;
+use Webkul\Admin\DataGrids\OrderRefundDataGrid;
 use Webkul\Admin\Http\Controllers\Controller;
-use Webkul\Sales\Exceptions\InvalidRefundQuantityException;
 use Webkul\Sales\Repositories\OrderItemRepository;
 use Webkul\Sales\Repositories\OrderRepository;
 use Webkul\Sales\Repositories\RefundRepository;
@@ -12,76 +11,86 @@ use Webkul\Sales\Repositories\RefundRepository;
 class RefundController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     *
+     * @var array
+     */
+    protected $_config;
+
+    /**
      * Create a new controller instance.
      *
+     * @param  \Webkul\Sales\Repositories\OrderRepository  $orderRepository
+     * @param  \Webkul\Sales\Repositories\OrderItemRepository  $orderItemRepository
+     * @param  \Webkul\Sales\Repositories\RefundRepository  $refundRepository
      * @return void
      */
     public function __construct(
         protected OrderRepository $orderRepository,
         protected OrderItemRepository $orderItemRepository,
         protected RefundRepository $refundRepository
-    ) {}
+    )
+    {
+        $this->_config = request('_config');
+    }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Http\View
      */
     public function index()
     {
         if (request()->ajax()) {
-            return datagrid(OrderRefundDataGrid::class)->process();
+            return app(OrderRefundDataGrid::class)->toJson();
         }
 
-        return view('admin::sales.refunds.index');
+        return view($this->_config['view']);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\View\View
+     * @param  int  $orderId
+     * @return \Illuminate\Http\View
      */
-    public function create(int $orderId)
+    public function create($orderId)
     {
         $order = $this->orderRepository->findOrFail($orderId);
 
-        return view('admin::sales.refunds.create', compact('order'));
+        return view($this->_config['view'], compact('order'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
+     * @param  int  $orderId
      * @return \Illuminate\Http\Response
      */
-    public function store(int $orderId)
+    public function store($orderId)
     {
         $order = $this->orderRepository->findOrFail($orderId);
 
         if (! $order->canRefund()) {
-            session()->flash('error', trans('admin::app.sales.refunds.create.creation-error'));
+            session()->flash('error', trans('admin::app.sales.refunds.creation-error'));
 
             return redirect()->back();
         }
 
         $this->validate(request(), [
-            'refund.items'   => 'array',
             'refund.items.*' => 'required|numeric|min:0',
         ]);
 
         $data = request()->all();
 
-        if (! isset($data['refund']['shipping'])) {
+        if (! $data['refund']['shipping']) {
             $data['refund']['shipping'] = 0;
         }
 
-        try {
-            $totals = $this->refundRepository->getOrderItemsRefundSummary($data['refund'], $orderId);
+        $totals = $this->refundRepository->getOrderItemsRefundSummary($data['refund']['items'], $orderId);
 
-            if (! $totals) {
-                throw new InvalidRefundQuantityException(trans('admin::app.sales.refunds.create.invalid-qty'));
-            }
-        } catch (InvalidRefundQuantityException $invalidRefundQuantityException) {
-            session()->flash('error', $invalidRefundQuantityException->getMessage());
+        if (! $totals) {
+            session()->flash('error', trans('admin::app.sales.refunds.invalid-qty'));
 
             return redirect()->back();
         }
@@ -91,39 +100,36 @@ class RefundController extends Controller
         $refundAmount = $totals['grand_total']['price'] - $totals['shipping']['price'] + $data['refund']['shipping'] + $data['refund']['adjustment_refund'] - $data['refund']['adjustment_fee'];
 
         if (! $refundAmount) {
-            session()->flash('error', trans('admin::app.sales.refunds.create.invalid-refund-amount-error'));
+            session()->flash('error', trans('admin::app.sales.refunds.invalid-refund-amount-error'));
 
             return redirect()->back();
         }
 
         if ($refundAmount > $maxRefundAmount) {
-            session()->flash('error', trans('admin::app.sales.refunds.create.refund-limit-error', [
-                'amount' => core()->formatBasePrice($maxRefundAmount),
-            ]));
+            session()->flash('error', trans('admin::app.sales.refunds.refund-limit-error', ['amount' => core()->formatBasePrice($maxRefundAmount)]));
 
             return redirect()->back();
         }
 
         $this->refundRepository->create(array_merge($data, ['order_id' => $orderId]));
 
-        session()->flash('success', trans('admin::app.sales.refunds.create.create-success'));
+        session()->flash('success', trans('admin::app.response.create-success', ['name' => 'Refund']));
 
-        return redirect()->route('admin.sales.orders.view', $orderId);
+        return redirect()->route($this->_config['redirect']);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse|mixed
+     * @param  int  $orderId
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function updateTotals(int $orderId)
+    public function updateQty($orderId)
     {
-        try {
-            $data = $this->refundRepository->getOrderItemsRefundSummary(request()->input(), $orderId);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], 400);
+        $data = $this->refundRepository->getOrderItemsRefundSummary(request()->all(), $orderId);
+
+        if (! $data) {
+            return response('');
         }
 
         return response()->json($data);
@@ -133,12 +139,12 @@ class RefundController extends Controller
      * Show the view for the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Http\View
      */
     public function view($id)
     {
         $refund = $this->refundRepository->findOrFail($id);
 
-        return view('admin::sales.refunds.view', compact('refund'));
+        return view($this->_config['view'], compact('refund'));
     }
 }

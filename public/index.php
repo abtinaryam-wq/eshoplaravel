@@ -1,37 +1,72 @@
 <?php
 
-use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Http\Request;
+/*
+|--------------------------------------------------------------------------
+| Checking For Bagisto's Installation
+|--------------------------------------------------------------------------
+|
+| Checking for Bagisto's installation. If installation is done then move to
+| Laravel portion.
+|
+*/
+
+$location = str_replace('\\', '/', getcwd());
+$currentLocation = explode("/", $location);
+$desiredLocation = implode("/", $currentLocation);
+$installFile = $desiredLocation . '/installer' . '/install.php';
+
+if (file_exists($installFile)) {
+    $install = require __DIR__.'/installer/install.php';
+} else {
+    $install = null;
+}
+
+if (! is_null($install)) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Redirect To Installer Page
+    |--------------------------------------------------------------------------
+    |
+    | If somehow anything went wrong then this will redirect to the installer
+    | page.
+    |
+    */
+
+    header("Location: $install");
+
+} else {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Register The Auto Loader
+    |--------------------------------------------------------------------------
+    |
+    | Composer provides a convenient, automatically generated class loader for
+    | this application. We just need to utilize it! We'll simply require it
+    | into the script here so we don't need to manually load our classes.
+    |
+    */
+
+    require __DIR__.'/../vendor/autoload.php';
+}
 
 define('LARAVEL_START', microtime(true));
 
 /*
 |--------------------------------------------------------------------------
-| Check If The Application Is Under Maintenance
+| Check If Application Is Under Maintenance
 |--------------------------------------------------------------------------
 |
-| If the application is in maintenance / demo mode via the "down" command
-| we will load this file so that any pre-rendered content can be shown
+| If the application is maintenance / demo mode via the "down" command we
+| will require this file so that any prerendered template can be shown
 | instead of starting the framework, which could cause an exception.
 |
 */
 
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
-    require $maintenance;
+if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
+    require __DIR__.'/../storage/framework/maintenance.php';
 }
-
-/*
-|--------------------------------------------------------------------------
-| Register The Auto Loader
-|--------------------------------------------------------------------------
-|
-| Composer provides a convenient, automatically generated class loader for
-| this application. We just need to utilize it! We'll simply require it
-| into the script here so we don't need to manually load our classes.
-|
-*/
-
-require __DIR__.'/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -46,10 +81,12 @@ require __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
-$kernel = $app->make(Kernel::class);
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
 $response = $kernel->handle(
-    $request = Request::capture(),
-)->send();
+    $request = Illuminate\Http\Request::capture()
+);
+
+$response->send();
 
 $kernel->terminate($request, $response);

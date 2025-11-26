@@ -3,6 +3,9 @@
 namespace Webkul\Payment\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\AliasLoader;
+use Webkul\Payment\Payment;
+use Webkul\Payment\Facades\Payment as PaymentFacade;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -13,8 +16,7 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        include __DIR__.'/../Http/helpers.php';
-
+        include __DIR__ . '/../Http/helpers.php';
         $this->app->register(EventServiceProvider::class);
     }
 
@@ -25,7 +27,23 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerFacades();
+
         $this->registerConfig();
+    }
+    /**
+     * Register Bouncer as a singleton.
+     *
+     * @return void
+     */
+    protected function registerFacades()
+    {
+        $loader = AliasLoader::getInstance();
+        $loader->alias('payment', PaymentFacade::class);
+
+        $this->app->singleton('payment', function () {
+            return new Payment();
+        });
     }
 
     /**
@@ -36,7 +54,11 @@ class PaymentServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->mergeConfigFrom(
-            dirname(__DIR__).'/Config/paymentmethods.php', 'payment_methods'
+            dirname(__DIR__) . '/Config/paymentmethods.php', 'paymentmethods'
+        );
+
+        $this->mergeConfigFrom(
+            dirname(__DIR__) . '/Config/system.php', 'core'
         );
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateProductDownloadableLinkTranslationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('product_downloadable_link_translations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('product_downloadable_link_id')->unsigned();
             $table->string('locale');
             $table->text('title')->nullable();
-
+            
+            $table->integer('product_downloadable_link_id')->unsigned();
             $table->foreign('product_downloadable_link_id', 'link_translations_link_id_foreign')->references('id')->on('product_downloadable_links')->onDelete('cascade');
         });
     }
@@ -32,4 +32,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('product_downloadable_link_translations');
     }
-};
+}

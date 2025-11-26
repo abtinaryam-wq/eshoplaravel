@@ -3,10 +3,10 @@
 namespace Webkul\Checkout\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Webkul\Checkout\Contracts\CartPayment as CartPaymentContract;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Webkul\Checkout\Database\Factories\CartPaymentFactory;
+use Webkul\Checkout\Contracts\CartPayment as CartPaymentContract;
 
 class CartPayment extends Model implements CartPaymentContract
 {
@@ -16,6 +16,8 @@ class CartPayment extends Model implements CartPaymentContract
 
     /**
      * Create a new factory instance for the model
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

@@ -8,6 +8,8 @@ class ProductReviewRepository extends Repository
 {
     /**
      * Specify Model class name
+     *
+     * @return string
      */
     public function model(): string
     {
@@ -17,14 +19,13 @@ class ProductReviewRepository extends Repository
     /**
      * Retrieve review for customerId
      *
-     * @return \Illuminate\Support\Collection
+     * @param int $customerId
      */
     public function getCustomerReview()
     {
-        $reviews = $this->model
-            ->where(['customer_id' => auth()->guard('customer')->user()->id])
-            ->with('product')
-            ->paginate(5);
+        $customerId = auth()->guard('customer')->user()->id;
+
+        $reviews = $this->model->where(['customer_id' => $customerId])->with('product')->paginate(5);
 
         return $reviews;
     }

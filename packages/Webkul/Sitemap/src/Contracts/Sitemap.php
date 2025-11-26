@@ -2,4 +2,6 @@
 
 namespace Webkul\Sitemap\Contracts;
 
-interface Sitemap {}
+interface Sitemap
+{
+}

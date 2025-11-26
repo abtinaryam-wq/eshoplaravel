@@ -1,10 +1,7 @@
 <?php
-
 namespace Webkul\SocialLogin\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Laravel\Socialite\Contracts\Factory;
-use Webkul\SocialLogin\SocialiteManager;
 
 class SocialLoginServiceProvider extends ServiceProvider
 {
@@ -15,11 +12,17 @@ class SocialLoginServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/../Http/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/../Http/routes.php');
 
-        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
-        $this->loadViewsFrom(__DIR__.'/../Resources/views', 'social_login');
+        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'sociallogin');
+
+        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'sociallogin');
+
+        $this->publishes([
+            __DIR__ . '/../../publishable/assets' => public_path('themes/default/assets'),
+        ], 'public');
 
         $this->app->register(EventServiceProvider::class);
     }
@@ -31,22 +34,18 @@ class SocialLoginServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        /**
-         * Register custom `SocialiteManager` to override the default laravel socialite manager
-         * to use the core config data for social login.
-         */
-        $this->app->singleton(Factory::class, function ($app) {
-            return new SocialiteManager($app);
-        });
+        $this->registerConfig();
     }
 
     /**
-     * Get the services provided by the provider.
+     * Register package config.
      *
-     * @return array
+     * @return void
      */
-    public function provides()
+    protected function registerConfig()
     {
-        return [Factory::class];
+        $this->mergeConfigFrom(
+            dirname(__DIR__) . '/Config/system.php', 'core'
+        );
     }
 }

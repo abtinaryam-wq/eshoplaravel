@@ -1,29 +1,45 @@
-<x-admin::layouts>
-    <x-slot:title>
-        @lang('admin::app.marketing.promotions.cart-rules.index.title')
-    </x-slot>
+@extends('admin::layouts.content')
 
-    <div class="mt-3 flex items-center justify-between gap-4 max-sm:flex-wrap">
-        <p class="text-xl font-bold text-gray-800 dark:text-white">
-            @lang('admin::app.marketing.promotions.cart-rules.index.title')
-        </p>
+@section('page_title')
+    {{ __('admin::app.promotions.cart-rules.title') }}
+@stop
 
-        <div class="flex items-center gap-x-2.5">
-            @if (bouncer()->hasPermission('marketing.promotions.cart_rules.create'))
-                <a 
-                    href="{{ route('admin.marketing.promotions.cart_rules.create') }}"
-                    class="primary-button"
-                >
-                    @lang('admin::app.marketing.promotions.cart-rules.index.create-btn')
-                </a>
-            @endif
+@section('content')
+    <div class="content">
+        @php
+            $customer_group = core()->getRequestedCustomerGroupCode();
+
+            $channel = core()->getRequestedChannelCode(false);
+        @endphp
+
+        <div class="page-header">
+            <div class="page-title">
+                <h1>{{ __('admin::app.promotions.cart-rules.title') }}</h1>
+            </div>
+
+            <div class="page-action">
+                @if (bouncer()->hasPermission('marketing.promotions.cart-rules.create'))
+                    <a href="{{ route('admin.cart-rules.create') }}" class="btn btn-lg btn-primary">
+                        {{ __('admin::app.promotions.cart-rules.add-title') }}
+                    </a>
+                @endif
+            </div>
+        </div>
+
+        <div class="page-content">
+            <datagrid-plus src="{{ route('admin.cart-rules.index') }}"></datagrid-plus>
         </div>
     </div>
-    
-    {!! view_render_event('bagisto.admin.marketing.promotions.cart-rules.list.before') !!}
+@endsection
 
-    <x-admin::datagrid :src="route('admin.marketing.promotions.cart_rules.index')" />
+@push('scripts')
+    <script>
+        function reloadPage(getVar, getVal) {
+            let url = new URL(window.location.href);
+            
+            url.searchParams.set(getVar, getVal);
 
-    {!! view_render_event('bagisto.admin.marketing.promotions.cart-rules.list.after') !!}
-
-</x-admin::layouts>
+            window.location.href = url.href;
+        }
+    </script>
+@endpush

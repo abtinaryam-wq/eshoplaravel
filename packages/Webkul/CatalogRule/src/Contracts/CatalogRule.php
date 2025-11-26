@@ -2,4 +2,6 @@
 
 namespace Webkul\CatalogRule\Contracts;
 
-interface CatalogRule {}
+interface CatalogRule
+{
+}

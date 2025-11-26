@@ -4,13 +4,16 @@ namespace Webkul\Sales\Repositories;
 
 use Illuminate\Support\Facades\Event;
 use Webkul\Core\Eloquent\Repository;
+use Webkul\Sales\Contracts\ShipmentItem;
 
 class ShipmentItemRepository extends Repository
 {
     /**
      * Specify Model class name
+     *
+     * @return string
      */
-    public function model(): string
+    function model(): string
     {
         return 'Webkul\Sales\Contracts\ShipmentItem';
     }
@@ -22,10 +25,6 @@ class ShipmentItemRepository extends Repository
     public function updateProductInventory($data)
     {
         if (! $data['product']) {
-            return;
-        }
-
-        if (! $data['product']->manage_stock) {
             return;
         }
 

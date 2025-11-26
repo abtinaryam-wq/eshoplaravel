@@ -6,13 +6,16 @@ use Webkul\Admin\Http\Controllers\ConfigurationController;
 /**
  * Configuration routes.
  */
-Route::get('configuration/search', [ConfigurationController::class, 'search'])->name('admin.configuration.search');
+Route::group(['middleware' => ['web', 'admin'], 'prefix' => config('app.admin_url')], function () {
+    Route::get('configuration/{slug?}/{slug2?}', [ConfigurationController::class, 'index'])->defaults('_config', [
+        'view' => 'admin::configuration.index',
+    ])->name('admin.configuration.index');
 
-Route::controller(ConfigurationController::class)->prefix('configuration/{slug?}/{slug2?}')->group(function () {
+    Route::post('configuration/{slug?}/{slug2?}', [ConfigurationController::class, 'store'])->defaults('_config', [
+        'redirect' => 'admin.configuration.index',
+    ])->name('admin.configuration.index.store');
 
-    Route::get('', 'index')->name('admin.configuration.index');
-
-    Route::post('', 'store')->name('admin.configuration.store');
-
-    Route::get('{path}', 'download')->name('admin.configuration.download');
+    Route::get('configuration/{slug?}/{slug2?}/{path}', [ConfigurationController::class, 'download'])->defaults('_config', [
+        'redirect' => 'admin.configuration.index',
+    ])->name('admin.configuration.download');
 });

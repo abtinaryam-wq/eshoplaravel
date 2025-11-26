@@ -3,29 +3,17 @@
 namespace Webkul\Checkout\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Webkul\Checkout\Contracts\Cart as CartContract;
 use Webkul\Checkout\Database\Factories\CartFactory;
-use Webkul\Core\Models\ChannelProxy;
-use Webkul\Customer\Models\CustomerProxy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Cart extends Model implements CartContract
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'cart';
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = [
         'id',
         'created_at',
@@ -33,32 +21,7 @@ class Cart extends Model implements CartContract
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'additional' => 'json',
-    ];
-
-    /**
-     * Get the customer record associated with the address.
-     */
-    public function customer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(CustomerProxy::modelClass());
-    }
-
-    /**
-     * Get the channel record associated with the address.
-     */
-    public function channel(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(ChannelProxy::modelClass());
-    }
-
-    /**
-     * To get relevant associated items with the cart instance.
+     * To get relevant associated items with the cart instance
      */
     public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
@@ -67,7 +30,7 @@ class Cart extends Model implements CartContract
     }
 
     /**
-     * To get all the associated items with the cart instance even the parent and child items of configurable products.
+     * To get all the associated items with the cart instance even the parent and child items of configurable products
      */
     public function all_items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
@@ -75,35 +38,61 @@ class Cart extends Model implements CartContract
     }
 
     /**
+     * Get the addresses for the cart.
+     */
+    public function addresses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CartAddressProxy::modelClass());
+    }
+
+    /**
      * Get the billing address for the cart.
      */
-    public function billing_address(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function billing_address(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasOne(CartAddressProxy::modelClass())->where('address_type', CartAddress::ADDRESS_TYPE_BILLING);
+        return $this->addresses()
+            ->where('address_type', CartAddress::ADDRESS_TYPE_BILLING);
+    }
+
+    /**
+     * Get billing address for the cart.
+     */
+    public function getBillingAddressAttribute()
+    {
+        return $this->billing_address()->first();
     }
 
     /**
      * Get the shipping address for the cart.
      */
-    public function shipping_address(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function shipping_address(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasOne(CartAddressProxy::modelClass())->where('address_type', CartAddress::ADDRESS_TYPE_SHIPPING);
+        return $this->addresses()
+            ->where('address_type', CartAddress::ADDRESS_TYPE_SHIPPING);
+    }
+
+    /**
+     * Get shipping address for the cart.
+     */
+    public function getShippingAddressAttribute()
+    {
+        return $this->shipping_address()->first();
     }
 
     /**
      * Get the shipping rates for the cart.
      */
-    public function shipping_rates(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function shipping_rates(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->hasMany(CartShippingRateProxy::modelClass());
+        return $this->hasManyThrough(CartShippingRateProxy::modelClass(), CartAddressProxy::modelClass(), 'cart_id', 'cart_address_id');
     }
 
     /**
      * Get all the attributes for the attribute groups.
      */
-    public function selected_shipping_rate()
+    public function selected_shipping_rate(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->shipping_rates
+        return $this->shipping_rates()
             ->where('method', $this->shipping_method);
     }
 
@@ -113,6 +102,7 @@ class Cart extends Model implements CartContract
     public function getSelectedShippingRateAttribute()
     {
         return $this->selected_shipping_rate()
+            ->where('method', $this->shipping_method)
             ->first();
     }
 
@@ -125,7 +115,9 @@ class Cart extends Model implements CartContract
     }
 
     /**
-     * Checks if cart have stockable items.
+     * Checks if cart have stockable items
+     *
+     * @return boolean
      */
     public function haveStockableItems(): bool
     {
@@ -139,22 +131,14 @@ class Cart extends Model implements CartContract
     }
 
     /**
-     * Checks if cart has downloadable items.
+     * Checks if cart has downloadable items
+     *
+     * @return boolean
      */
     public function hasDownloadableItems(): bool
     {
-        return $this->items->pluck('type')->contains('downloadable');
-    }
-
-    /**
-     * Returns true if cart contains one or many products with quantity box.
-     *
-     * (For Example: simple, configurable, virtual)
-     */
-    public function hasProductsWithQuantityBox(): bool
-    {
         foreach ($this->items as $item) {
-            if ($item->getTypeInstance()->showQuantityBox()) {
+            if (stristr($item->type, 'downloadable') !== false) {
                 return true;
             }
         }
@@ -163,7 +147,26 @@ class Cart extends Model implements CartContract
     }
 
     /**
-     * Checks if cart has items that allow guest checkout.
+     * Returns true if cart contains one or many products with quantity box.
+     * (for example: simple, configurable, virtual)
+     *
+     * @return bool
+     */
+    public function hasProductsWithQuantityBox(): bool
+    {
+        foreach ($this->items as $item) {
+            if ($item->product->getTypeInstance()->showQuantityBox()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if cart has items that allow guest checkout
+     *
+     * @return boolean
      */
     public function hasGuestCheckoutItems(): bool
     {
@@ -177,7 +180,24 @@ class Cart extends Model implements CartContract
     }
 
     /**
-     * Create a new factory instance for the model.
+     * Check minimum order.
+     *
+     * @return boolean
+     */
+    public function checkMinimumOrder(): bool
+    {
+        $minimumOrderAmount = (float)(core()->getConfigData('sales.orderSettings.minimum-order.minimum_order_amount') ?? 0);
+
+        $cartBaseSubTotal = (float)$this->base_sub_total;
+
+        return $cartBaseSubTotal >= $minimumOrderAmount;
+    }
+
+
+    /**
+     * Create a new factory instance for the model
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

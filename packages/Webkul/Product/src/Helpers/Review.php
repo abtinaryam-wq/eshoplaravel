@@ -4,86 +4,103 @@ namespace Webkul\Product\Helpers;
 
 use Illuminate\Support\Facades\DB;
 
-class Review
+class Review extends AbstractProduct
 {
     /**
      * Returns the product's avg rating
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
+     * @return float
      */
     public function getReviews($product)
     {
-        return $product->reviews()->where('status', 'approved');
+        static $reviews = [];
+
+        if (array_key_exists($product->id, $reviews)) {
+            return $reviews[$product->id];
+        }
+
+        return $reviews[$product->id] = $product->reviews()->where('status', 'approved');
     }
 
     /**
      * Returns the product's avg rating
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
-     * @return string
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
+     * @return float
      */
     public function getAverageRating($product)
     {
-        return number_format(round($product->reviews->where('status', 'approved')->avg('rating'), 2), 1);
+        static $avgRating = [];
+
+        if (array_key_exists($product->id, $avgRating)) {
+            return $avgRating[$product->id];
+        }
+
+        return $avgRating[$product->id] = number_format(round($product->reviews()->where('status', 'approved')->avg('rating'), 2), 1);
     }
 
     /**
      * Returns the total review of the product
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+    * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return int
      */
     public function getTotalReviews($product)
     {
-        return $product->reviews->where('status', 'approved')->count();
+        static $totalReviews = [];
+
+        if (array_key_exists($product->id, $totalReviews)) {
+            return $totalReviews[$product->id];
+        }
+
+        return $totalReviews[$product->id] = $product->reviews()->where('status', 'approved')->count();
     }
 
-    /**
+     /**
      * Returns the total rating of the product
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return int
      */
     public function getTotalRating($product)
     {
-        return $product->reviews->where('status', 'approved')->sum('rating');
-    }
+        static $totalRating = [];
 
-    /**
-     * Returns the total active feedback of the product
-     *
-     * @param  \Webkul\Product\Contracts\Product  $product
-     * @return int
-     */
-    public function getTotalFeedback($product)
-    {
-        return core()->getConfigData('catalog.products.review.summary') == 'star_counts'
-            ? $this->getTotalRating($product)
-            : $this->getTotalReviews($product);
+        if (array_key_exists($product->id, $totalRating)) {
+            return $totalRating[$product->id];
+        }
+
+        return $totalRating[$product->id] = $product->reviews()->where('status', 'approved')->sum('rating');
     }
 
     /**
      * Returns reviews with ratings.
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
-     * @return \Illuminate\Support\Collection
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
+     *
+     * @return collection
      */
     public function getReviewsWithRatings($product)
     {
-        return $product->reviews()
-            ->where('status', 'approved')
+        static $reviews = [];
+
+        if (array_key_exists($product->id, $reviews)) {
+            return $reviews[$product->id];
+        }
+
+        return $reviews[$product->id] = $product->reviews()->where('status', 'approved')
             ->select('rating', DB::raw('count(*) as total'))
             ->groupBy('rating')
             ->orderBy('rating', 'desc')
             ->get();
     }
 
-    /**
+     /**
      * Returns the Percentage rating of the product
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
-     * @return array
+    * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
+     * @return int
      */
     public function getPercentageRating($product)
     {

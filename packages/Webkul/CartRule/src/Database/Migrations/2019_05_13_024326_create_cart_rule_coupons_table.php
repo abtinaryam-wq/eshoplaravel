@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateCartruleCouponsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -22,10 +22,10 @@ return new class extends Migration
             $table->integer('type')->unsigned()->default(0);
             $table->boolean('is_primary')->default(0);
             $table->date('expired_at')->nullable();
-            $table->integer('cart_rule_id')->unsigned();
-            $table->timestamps();
 
+            $table->integer('cart_rule_id')->unsigned();
             $table->foreign('cart_rule_id')->references('id')->on('cart_rules')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -38,4 +38,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('cart_rule_coupons');
     }
-};
+}

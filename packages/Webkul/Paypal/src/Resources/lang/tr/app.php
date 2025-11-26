@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'errors' => [
-        'invalid-configs'      => 'PayPal ödeme yöntemiyle ilgili bir yapılandırma sorunu var gibi görünüyor. Yardım için lütfen mağaza sahibiyle iletişime geçin.',
-        'something-went-wrong' => 'PayPal ödeme yöntemiyle ilgili bir hata oluştu. Yardım için lütfen mağaza sahibiyle iletişime geçin.',
-    ],
+    'error' => [
+        'universal-error' => 'Bir şeyler yanlış gitti!',
+        'sdk-validation-error' => 'Müşteri Kimliği, üretim veya sanal alan için tanınmadı! Lütfen diğer seçeneği seçin',
+        'authorization-error' => 'Müşteri Kimliği ve Müşteri Sırrı geçerli olmalıdır!'
+    ]
 ];

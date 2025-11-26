@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateAdminsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,10 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password')->nullable();
-            $table->string('api_token', 80)->unique()->nullable()->default(null);
             $table->boolean('status')->default(0);
             $table->integer('role_id')->unsigned();
-            $table->string('image')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -36,4 +34,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('admins');
     }
-};
+}

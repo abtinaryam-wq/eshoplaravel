@@ -2,14 +2,12 @@
 
 namespace Webkul\Product\Helpers;
 
-use Webkul\Attribute\Repositories\AttributeOptionRepository;
-
-class View
+class View extends AbstractProduct
 {
     /**
      * Returns the visible custom attributes
      *
-     * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product|\Webkul\Product\Contracts\ProductFlat  $product
      * @return void|array
      */
     public function getAdditionalData($product)
@@ -18,16 +16,20 @@ class View
 
         $attributes = $product->attribute_family->custom_attributes()->where('attributes.is_visible_on_front', 1)->get();
 
-        $attributeOptionRepository = app(AttributeOptionRepository::class);
+        $attributeOptionReposotory = app('Webkul\Attribute\Repositories\AttributeOptionRepository');
 
         foreach ($attributes as $attribute) {
-            $value = $product->{$attribute->code};
+            if ($product instanceof \Webkul\Product\Models\ProductFlat) {
+                $value = $product->product->{$attribute->code};
+            } else {
+                $value = $product->{$attribute->code};
+            }
 
             if ($attribute->type == 'boolean') {
                 $value = $value ? 'Yes' : 'No';
-            } elseif ($value) {
+            } elseif($value) {
                 if ($attribute->type == 'select') {
-                    $attributeOption = $attributeOptionRepository->find($value);
+                    $attributeOption = $attributeOptionReposotory->find($value);
 
                     if ($attributeOption) {
                         $value = $attributeOption->label ?? null;
@@ -42,7 +44,7 @@ class View
                 ) {
                     $labels = [];
 
-                    $attributeOptions = $attributeOptionRepository->findWhereIn('id', explode(',', $value));
+                    $attributeOptions = $attributeOptionReposotory->findWhereIn('id', explode(",", $value));
 
                     foreach ($attributeOptions as $attributeOption) {
                         if ($label = $attributeOption->label) {
@@ -50,7 +52,7 @@ class View
                         }
                     }
 
-                    $value = implode(', ', $labels);
+                    $value = implode(", ", $labels);
                 }
             }
 

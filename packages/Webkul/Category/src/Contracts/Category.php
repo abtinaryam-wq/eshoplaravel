@@ -2,4 +2,6 @@
 
 namespace Webkul\Category\Contracts;
 
-interface Category {}
+interface Category
+{
+}

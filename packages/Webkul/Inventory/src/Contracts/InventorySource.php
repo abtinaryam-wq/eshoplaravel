@@ -2,4 +2,6 @@
 
 namespace Webkul\Inventory\Contracts;
 
-interface InventorySource {}
+interface InventorySource
+{
+}

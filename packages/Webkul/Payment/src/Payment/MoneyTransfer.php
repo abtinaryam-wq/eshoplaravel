@@ -2,50 +2,37 @@
 
 namespace Webkul\Payment\Payment;
 
-use Illuminate\Support\Facades\Storage;
-
 class MoneyTransfer extends Payment
 {
     /**
-     * Payment method code.
+     * Payment method code
      *
      * @var string
      */
-    protected $code = 'moneytransfer';
+    protected $code  = 'moneytransfer';
+
+    public function getRedirectUrl()
+    {
+        
+    }
 
     /**
-     * Get redirect url.
-     *
-     * @return string
-     */
-    public function getRedirectUrl() {}
-
-    /**
-     * Returns payment method additional information.
+     * Returns payment method additional information
      *
      * @return array
      */
     public function getAdditionalDetails()
     {
-        if (empty($this->getConfigData('mailing_address'))) {
+        if (
+            ! $this->getConfigData('mailing_address')
+            || $this->getConfigData('mailing_address') == ''
+        ) {
             return [];
         }
 
         return [
-            'title' => trans('admin::app.configuration.index.sales.payment-methods.mailing-address'),
+            'title' => trans('admin::app.admin.system.mailing-address'),
             'value' => $this->getConfigData('mailing_address'),
         ];
-    }
-
-    /**
-     * Returns payment method image.
-     *
-     * @return string
-     */
-    public function getImage()
-    {
-        $url = $this->getConfigData('image');
-
-        return $url ? Storage::url($url) : bagisto_asset('images/money-transfer.png', 'shop');
     }
 }

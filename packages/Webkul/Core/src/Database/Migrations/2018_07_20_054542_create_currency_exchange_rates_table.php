@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateCurrencyExchangeRatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('currency_exchange_rates', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('rate', 24, 12);
+            $table->decimal('rate', 10, 5);
             $table->integer('target_currency')->unique()->unsigned();
             $table->foreign('target_currency')->references('id')->on('currencies')->onDelete('cascade');
             $table->timestamps();
@@ -31,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('currency_exchange_rates');
     }
-};
+}

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateProductVideosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,11 +15,9 @@ return new class extends Migration
     {
         Schema::create('product_videos', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('product_id')->unsigned();
             $table->string('type')->nullable();
             $table->string('path');
-            $table->integer('position')->default(0)->unsigned();
-
+            $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
@@ -33,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('product_videos');
     }
-};
+}

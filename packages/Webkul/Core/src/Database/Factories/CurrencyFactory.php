@@ -2,9 +2,9 @@
 
 namespace Webkul\Core\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Webkul\Core\Enums\CurrencyPositionEnum;
+use Faker\Generator as Faker;
 use Webkul\Core\Models\Currency;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CurrencyFactory extends Factory
 {
@@ -17,16 +17,14 @@ class CurrencyFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
     public function definition(): array
     {
         return [
-            'code'              => $this->faker->unique()->currencyCode,
-            'name'              => $this->faker->word,
-            'decimal'           => 2,
-            'group_separator'   => ',',
-            'decimal_separator' => '.',
-            'currency_position' => CurrencyPositionEnum::LEFT->value,
+            'code' => $this->faker->unique()->currencyCode,
+            'name' => $this->faker->word,
         ];
     }
 }

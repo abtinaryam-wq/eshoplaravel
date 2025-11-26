@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
+class CreateChannelInventorySourcesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('channel_id')->unsigned();
             $table->integer('inventory_source_id')->unsigned();
 
-            $table->unique(['channel_id', 'inventory_source_id'], 'channel_inventory_source_unique');
+            $table->unique(['channel_id', 'inventory_source_id']);
             $table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');
             $table->foreign('inventory_source_id')->references('id')->on('inventory_sources')->onDelete('cascade');
         });
@@ -32,4 +32,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('channel_inventory_sources');
     }
-};
+}

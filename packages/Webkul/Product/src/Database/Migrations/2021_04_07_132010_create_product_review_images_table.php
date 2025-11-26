@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateProductReviewImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,10 +15,9 @@ return new class extends Migration
     {
         Schema::create('product_review_images', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('review_id')->unsigned();
             $table->string('type')->nullable();
             $table->string('path');
-
+            $table->integer('review_id')->unsigned();
             $table->foreign('review_id')->references('id')->on('product_reviews')->onDelete('cascade');
         });
     }
@@ -32,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('product_review_images');
     }
-};
+}

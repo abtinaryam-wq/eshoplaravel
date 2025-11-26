@@ -3,8 +3,9 @@
 namespace Webkul\Sales\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Webkul\Customer\Models\CustomerProxy;
 use Webkul\Sales\Contracts\DownloadableLinkPurchased as DownloadableLinkPurchasedContract;
+use Webkul\Product\Models\Product;
+use Webkul\Customer\Models\CustomerProxy;
 
 class DownloadableLinkPurchased extends Model implements DownloadableLinkPurchasedContract
 {

@@ -3,15 +3,15 @@
 namespace Webkul\Sales\Models;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Webkul\Product\Type\AbstractType;
-use Webkul\Sales\Contracts\InvoiceItem as InvoiceItemContract;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Webkul\Sales\Database\Factories\InvoiceItemFactory;
+use Webkul\Sales\Contracts\InvoiceItem as InvoiceItemContract;
 
 class InvoiceItem extends Model implements InvoiceItemContract
 {
@@ -29,6 +29,8 @@ class InvoiceItem extends Model implements InvoiceItemContract
 
     /**
      * Retrieve type instance
+     *
+     * @return AbstractType
      */
     public function getTypeInstance(): AbstractType
     {
@@ -85,6 +87,8 @@ class InvoiceItem extends Model implements InvoiceItemContract
 
     /**
      * Create a new factory instance for the model.
+     *
+     * @return Factory
      */
     protected static function newFactory(): Factory
     {

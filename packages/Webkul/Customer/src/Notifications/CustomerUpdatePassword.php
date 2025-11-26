@@ -5,7 +5,6 @@ namespace Webkul\Customer\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Webkul\Customer\Models\Customer;
 
 class CustomerUpdatePassword extends Mailable
 {
@@ -14,9 +13,12 @@ class CustomerUpdatePassword extends Mailable
     /**
      * Create a new message instance.
      *
+     * @param  \Webkul\Customer\Models\Customer  $customer
      * @return void
      */
-    public function __construct(public Customer $customer) {}
+    public function __construct(public $customer)
+    {
+    }
 
     /**
      * Build the message.

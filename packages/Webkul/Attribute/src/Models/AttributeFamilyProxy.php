@@ -4,4 +4,7 @@ namespace Webkul\Attribute\Models;
 
 use Konekt\Concord\Proxies\ModelProxy;
 
-class AttributeFamilyProxy extends ModelProxy {}
+class AttributeFamilyProxy extends ModelProxy
+{
+
+}

@@ -1,15 +1,14 @@
 <?php
 
 namespace Webkul\Checkout\Listeners;
+use Cart;
 
-use Webkul\Checkout\Facades\Cart;
+class CustomerEventsHandler {
 
-class CustomerEventsHandler
-{
     /**
      * Handle Customer login events.
      */
-    public function onCustomerLogin($customer)
+    public function onCustomerLogin($event)
     {
         /**
          * handle the user login event to manage the after login, if the user has added any products as guest then
@@ -17,7 +16,7 @@ class CustomerEventsHandler
          *
          * Check whether cookie is present or not and then check emptiness and then do the appropriate actions.
          */
-        Cart::mergeCart($customer);
+        Cart::mergeCart();
     }
 
     /**

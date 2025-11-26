@@ -9,14 +9,17 @@ class Order
     /**
      * Create a new listener instance.
      *
+     * @param  \Webkul\Booking\Repositories\BookingRepository  $bookingRepository
      * @return void
      */
-    public function __construct(protected BookingRepository $bookingRepository) {}
+    public function __construct(protected BookingRepository $bookingRepository)
+    {
+    }
 
     /**
      * After sales order creation, add entry to bookings table
      *
-     * @param  \Webkul\Sales\Contracts\Order  $order
+     * @param \Webkul\Sales\Contracts\Order  $order
      */
     public function afterPlaceOrder($order)
     {
