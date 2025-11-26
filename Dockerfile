@@ -1,7 +1,8 @@
 FROM php:8.2-fpm-alpine
 
-RUN apk add --no-cache git curl nodejs npm nginx bash \
-    postgresql-dev mysql-client
+RUN apk add --no-cache \
+    git curl nodejs npm nginx bash \
+    postgresql-dev postgresql-client
 
 RUN apk add --no-cache \
         libpng-dev \
@@ -15,12 +16,11 @@ RUN apk add --no-cache \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
         pdo \
-        pdo_mysql \
         pdo_pgsql \
+        pgsql \
         gd \
         dom \
         xml \
-        mysqli \
         mbstring \
         zip \
         opcache \
