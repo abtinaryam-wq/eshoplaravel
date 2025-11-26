@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class AddMinPriceAndMaxPriceColumnInProductFlatTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table('product_flat', function (Blueprint $table) {
@@ -19,9 +14,11 @@ class AddMinPriceAndMaxPriceColumnInProductFlatTable extends Migration
             $table->decimal('max_price', 12, 4)->nullable();
         });
 
-        // Fix for PostgreSQL: use raw SQL with USING clause
         if (DB::getDriverName() === 'pgsql') {
-            DB::statement('ALTER TABLE product_flat ALTER COLUMN special_price TYPE NUMERIC(12,4) USING special_price::numeric(12,4)');
+            // ابتدا ستون را به متن تغییر دهیم (که قابلیت تبدیل بیشتری دارد)
+            DB::statement('ALTER TABLE product_flat ALTER COLUMN special_price TYPE VARCHAR USING special_price::VARCHAR');
+            // سپس به numeric تبدیل کنیم
+            DB::statement('ALTER TABLE product_flat ALTER COLUMN special_price TYPE NUMERIC(12,4) USING special_price::NUMERIC(12,4)');
             DB::statement('ALTER TABLE product_flat ALTER COLUMN special_price DROP NOT NULL');
         } else {
             Schema::table('product_flat', function (Blueprint $table) {
@@ -30,16 +27,10 @@ class AddMinPriceAndMaxPriceColumnInProductFlatTable extends Migration
         }
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table('product_flat', function (Blueprint $table) {
-            $table->dropColumn('min_price');
-            $table->dropColumn('max_price');
+            $table->dropColumn(['min_price', 'max_price']);
         });
     }
 }
