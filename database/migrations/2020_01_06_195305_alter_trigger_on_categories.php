@@ -5,44 +5,42 @@ use Illuminate\Database\Migrations\Migration;
 
 class AlterTriggerOnCategories extends Migration
 {
-    private const TRIGGER_NAME_INSERT = 'trig_categories_insert';
-    private const TRIGGER_NAME_UPDATE = 'trig_categories_update';
-
     public function up()
     {
-        if (DB::getDriverName() !== 'mysql') {
+        if (DB::getDriverName() !== 'pgsql') {
             return;
         }
 
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_INSERT));
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_UPDATE));
+        $dbPrefix = DB::getTablePrefix();
 
-        DB::unprepared(sprintf('
-            CREATE TRIGGER %s
-            BEFORE INSERT ON categories
-            FOR EACH ROW
-            BEGIN
-                SET NEW.url_path = NEW.slug;
-            END
-        ', self::TRIGGER_NAME_INSERT));
+        // دوباره تریگرها را برای categories تعریف می‌کنیم
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trig_categories_insert ON {$dbPrefix}categories;
+            DROP TRIGGER IF EXISTS trig_categories_update ON {$dbPrefix}categories;
 
-        DB::unprepared(sprintf('
-            CREATE TRIGGER %s
-            BEFORE UPDATE ON categories
+            CREATE TRIGGER trig_categories_insert
+            BEFORE INSERT ON {$dbPrefix}categories
             FOR EACH ROW
-            BEGIN
-                SET NEW.url_path = NEW.slug;
-            END
-        ', self::TRIGGER_NAME_UPDATE));
+            EXECUTE FUNCTION {$dbPrefix}categories_set_url_path();
+
+            CREATE TRIGGER trig_categories_update
+            BEFORE UPDATE ON {$dbPrefix}categories
+            FOR EACH ROW
+            EXECUTE FUNCTION {$dbPrefix}categories_set_url_path();
+        ");
     }
 
     public function down()
     {
-        if (DB::getDriverName() !== 'mysql') {
+        if (DB::getDriverName() !== 'pgsql') {
             return;
         }
 
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_INSERT));
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_UPDATE));
+        $dbPrefix = DB::getTablePrefix();
+
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trig_categories_insert ON {$dbPrefix}categories;
+            DROP TRIGGER IF EXISTS trig_categories_update ON {$dbPrefix}categories;
+        ");
     }
 }

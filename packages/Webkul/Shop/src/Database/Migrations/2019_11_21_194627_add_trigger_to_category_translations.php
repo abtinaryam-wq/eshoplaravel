@@ -2,102 +2,84 @@
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
-use Webkul\Category\Models\CategoryTranslation;
 
 class AddTriggerToCategoryTranslations extends Migration
 {
-    private const TRIGGER_NAME_INSERT = 'trig_category_translations_insert';
-    private const TRIGGER_NAME_UPDATE = 'trig_category_translations_update';
-
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
         $dbPrefix = DB::getTablePrefix();
 
-        $triggerBody = $this->getTriggerBody();
-        $insertTrigger = <<< SQL
-            CREATE TRIGGER %s
-            BEFORE INSERT ON ${dbPrefix}category_translations
-            FOR EACH ROW
+        DB::unprepared("
+            CREATE OR REPLACE FUNCTION {$dbPrefix}category_translations_set_url_path()
+            RETURNS trigger AS $$
+            DECLARE
+                parent_url_path TEXT;
             BEGIN
-                $triggerBody
-            END;
-SQL;
+                IF NEW.category_id <> 1 THEN
+                    SELECT STRING_AGG(parent_translations.slug, '/' ORDER BY parent._lft)
+                    INTO parent_url_path
+                    FROM {$dbPrefix}categories AS node
+                    JOIN {$dbPrefix}categories AS parent
+                      ON node._lft >= parent._lft
+                     AND node._rgt <= parent._rgt
+                    JOIN {$dbPrefix}category_translations AS parent_translations
+                      ON parent.id = parent_translations.category_id
+                    WHERE node.id = (
+                              SELECT parent_id
+                              FROM {$dbPrefix}categories
+                              WHERE id = NEW.category_id
+                          )
+                      AND parent.id <> 1
+                      AND parent_translations.locale = NEW.locale
+                    GROUP BY node.id;
 
-        $updateTrigger = <<< SQL
-            CREATE TRIGGER %s
-            BEFORE UPDATE ON ${dbPrefix}category_translations
-            FOR EACH ROW
-            BEGIN
-                $triggerBody
-            END;
-SQL;
-
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_INSERT));
-        DB::unprepared(sprintf($insertTrigger, self::TRIGGER_NAME_INSERT));
-
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_UPDATE));
-        DB::unprepared(sprintf($updateTrigger, self::TRIGGER_NAME_UPDATE));
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_INSERT));
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s;', self::TRIGGER_NAME_UPDATE));
-    }
-
-    /**
-     * Returns trigger body as string
-     *
-     * @return string
-     */
-    private function getTriggerBody()
-    {
-        $dbPrefix = DB::getTablePrefix();
-
-        return <<<SQL
-            DECLARE parentUrlPath varchar(255);
-            DECLARE urlPath varchar(255);
-
-            -- Category with id 1 is root by default
-            IF NEW.category_id <> 1
-            THEN
-
-                SELECT
-                    GROUP_CONCAT(parent_translations.slug SEPARATOR '/') INTO parentUrlPath
-                FROM
-                    ${dbPrefix}categories AS node,
-                    ${dbPrefix}categories AS parent
-                    JOIN ${dbPrefix}category_translations AS parent_translations ON parent.id = parent_translations.category_id
-                WHERE
-                    node._lft >= parent._lft
-                    AND node._rgt <= parent._rgt
-                    AND node.id = (SELECT parent_id FROM categories WHERE id = NEW.category_id)
-                    AND parent.id <> 1
-                    AND parent_translations.locale = NEW.locale
-                GROUP BY
-                    node.id;
-
-                IF parentUrlPath IS NULL
-                THEN
-                    SET urlPath = NEW.slug;
+                    IF parent_url_path IS NULL THEN
+                        NEW.url_path := NEW.slug;
+                    ELSE
+                        NEW.url_path := parent_url_path || '/' || NEW.slug;
+                    END IF;
                 ELSE
-                    SET urlPath = concat(parentUrlPath, '/', NEW.slug);
+                    NEW.url_path := NEW.slug;
                 END IF;
 
-                SET NEW.url_path = urlPath;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+        ");
 
-            END IF;
-SQL;
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trig_category_translations_insert ON {$dbPrefix}category_translations;
+            CREATE TRIGGER trig_category_translations_insert
+            BEFORE INSERT ON {$dbPrefix}category_translations
+            FOR EACH ROW
+            EXECUTE FUNCTION {$dbPrefix}category_translations_set_url_path();
+        ");
 
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trig_category_translations_update ON {$dbPrefix}category_translations;
+            CREATE TRIGGER trig_category_translations_update
+            BEFORE UPDATE ON {$dbPrefix}category_translations
+            FOR EACH ROW
+            EXECUTE FUNCTION {$dbPrefix}category_translations_set_url_path();
+        ");
+    }
+
+    public function down()
+    {
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
+
+        $dbPrefix = DB::getTablePrefix();
+
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trig_category_translations_insert ON {$dbPrefix}category_translations;
+            DROP TRIGGER IF EXISTS trig_category_translations_update ON {$dbPrefix}category_translations;
+            DROP FUNCTION IF EXISTS {$dbPrefix}category_translations_set_url_path();
+        ");
     }
 }

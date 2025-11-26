@@ -5,44 +5,42 @@ use Illuminate\Database\Migrations\Migration;
 
 class AlterTriggerCategoryTranslations extends Migration
 {
-    private const TRIGGER_NAME_INSERT = 'trig_category_translations_insert';
-    private const TRIGGER_NAME_UPDATE = 'trig_category_translations_update';
-
     public function up()
     {
-        if (DB::getDriverName() !== 'mysql') {
+        if (DB::getDriverName() !== 'pgsql') {
             return;
         }
 
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_INSERT));
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_UPDATE));
+        $dbPrefix = DB::getTablePrefix();
 
-        DB::unprepared(sprintf('
-            CREATE TRIGGER %s
-            BEFORE INSERT ON category_translations
-            FOR EACH ROW
-            BEGIN
-                SET NEW.url_path = (SELECT slug FROM categories WHERE id = NEW.category_id);
-            END
-        ', self::TRIGGER_NAME_INSERT));
+        // فقط تریگرها را دوباره تعریف می‌کنیم تا مطمئن باشیم
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trig_category_translations_insert ON {$dbPrefix}category_translations;
+            DROP TRIGGER IF EXISTS trig_category_translations_update ON {$dbPrefix}category_translations;
 
-        DB::unprepared(sprintf('
-            CREATE TRIGGER %s
-            BEFORE UPDATE ON category_translations
+            CREATE TRIGGER trig_category_translations_insert
+            BEFORE INSERT ON {$dbPrefix}category_translations
             FOR EACH ROW
-            BEGIN
-                SET NEW.url_path = (SELECT slug FROM categories WHERE id = NEW.category_id);
-            END
-        ', self::TRIGGER_NAME_UPDATE));
+            EXECUTE FUNCTION {$dbPrefix}category_translations_set_url_path();
+
+            CREATE TRIGGER trig_category_translations_update
+            BEFORE UPDATE ON {$dbPrefix}category_translations
+            FOR EACH ROW
+            EXECUTE FUNCTION {$dbPrefix}category_translations_set_url_path();
+        ");
     }
 
     public function down()
     {
-        if (DB::getDriverName() !== 'mysql') {
+        if (DB::getDriverName() !== 'pgsql') {
             return;
         }
 
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_INSERT));
-        DB::unprepared(sprintf('DROP TRIGGER IF EXISTS %s', self::TRIGGER_NAME_UPDATE));
+        $dbPrefix = DB::getTablePrefix();
+
+        DB::unprepared("
+            DROP TRIGGER IF EXISTS trig_category_translations_insert ON {$dbPrefix}category_translations;
+            DROP TRIGGER IF EXISTS trig_category_translations_update ON {$dbPrefix}category_translations;
+        ");
     }
 }
