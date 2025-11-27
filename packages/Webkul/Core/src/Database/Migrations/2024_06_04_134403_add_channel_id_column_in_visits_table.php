@@ -4,36 +4,26 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddChannelIdColumnInVisitsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::table('visits', function (Blueprint $table) {
-            $table->integer('channel_id')->unsigned()->nullable()->after('visitor_id');
-
-            $table->foreign('channel_id')->references('id')->on('channels')->onDelete('cascade');
-        });
-
-        $firstChannelId = DB::table('channels')->value('id');
-
-        if (! $firstChannelId) {
-            return;
+        // فقط اگر جدول وجود دارد، ستون رو اضافه کن
+        if (Schema::hasTable('visits')) {
+            Schema::table('visits', function (Blueprint $table) {
+                if (! Schema::hasColumn('visits', 'channel_id')) {
+                    $table->integer('channel_id')->nullable();
+                }
+            });
         }
-
-        DB::table('visits')->update(['channel_id' => $firstChannelId]);
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::table('visits', function (Blueprint $table) {
-            $table->dropForeign(['channel_id']);
-            $table->dropColumn('channel_id');
-        });
+        if (Schema::hasTable('visits') && Schema::hasColumn('visits', 'channel_id')) {
+            Schema::table('visits', function (Blueprint $table) {
+                $table->dropColumn('channel_id');
+            });
+        }
     }
-};
+}
