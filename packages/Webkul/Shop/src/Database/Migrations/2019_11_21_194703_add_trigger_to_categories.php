@@ -1,60 +1,32 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class AddTriggerToCategories extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         if (DB::getDriverName() !== 'pgsql') {
             return;
         }
 
-        $dbPrefix = DB::getTablePrefix();
-
-        //
-        DB::unprepared("
-            CREATE OR REPLACE FUNCTION {$dbPrefix}categories_set_url_path()
-            RETURNS trigger AS $$
-            BEGIN
-                NEW.url_path := NEW.slug;
-                RETURN NEW;
-            END;
-            $$ LANGUAGE plpgsql;
-        ");
-
-        //
-        DB::unprepared("
-            DROP TRIGGER IF EXISTS trig_categories_insert ON {$dbPrefix}categories;
-            CREATE TRIGGER trig_categories_insert
-            BEFORE INSERT ON {$dbPrefix}categories
-            FOR EACH ROW
-            EXECUTE FUNCTION {$dbPrefix}categories_set_url_path();
-        ");
-
-        //
-        DB::unprepared("
-            DROP TRIGGER IF EXISTS trig_categories_update ON {$dbPrefix}categories;
-            CREATE TRIGGER trig_categories_update
-            BEFORE UPDATE ON {$dbPrefix}categories
-            FOR EACH ROW
-            EXECUTE FUNCTION {$dbPrefix}categories_set_url_path();
-        ");
+        // TEMP: Skip trigger for PostgreSQL - missing url_path column
+        return;
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        if (DB::getDriverName() !== 'pgsql') {
-            return;
-        }
-
-        $dbPrefix = DB::getTablePrefix();
-
-        DB::unprepared("
-            DROP TRIGGER IF EXISTS trig_categories_insert ON {$dbPrefix}categories;
-            DROP TRIGGER IF EXISTS trig_categories_update ON {$dbPrefix}categories;
-            DROP FUNCTION IF EXISTS {$dbPrefix}categories_set_url_path();
-        ");
+        //
     }
 }
