@@ -8,7 +8,7 @@ class AddChannelIdColumnInVisitsTable extends Migration
 {
     public function up()
     {
-        // فقط اگر جدول وجود دارد، ستون رو اضافه کن
+        //
         if (Schema::hasTable('visits')) {
             Schema::table('visits', function (Blueprint $table) {
                 if (! Schema::hasColumn('visits', 'channel_id')) {

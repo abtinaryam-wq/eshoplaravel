@@ -15,7 +15,7 @@ class AddLogoPathColumnToLocales extends Migration
             });
         }
 
-        // فقط برای PostgreSQL
+        //
         if (DB::getDriverName() === 'pgsql') {
             DB::statement("UPDATE locales SET logo_path = 'locales/' || code || '.png' WHERE logo_path IS NULL");
         }

@@ -13,7 +13,7 @@ class AddTriggerToCategoryTranslations extends Migration
 
         $dbPrefix = DB::getTablePrefix();
 
-        // تابع تریگر برای ست کردن url_path
+        //
         DB::unprepared("
             CREATE OR REPLACE FUNCTION {$dbPrefix}category_translations_set_url_path()
             RETURNS trigger AS $$
@@ -54,7 +54,7 @@ class AddTriggerToCategoryTranslations extends Migration
             $$ LANGUAGE plpgsql;
         ");
 
-        // تریگر قبل از INSERT
+        //
         DB::unprepared("
             DROP TRIGGER IF EXISTS trig_category_translations_insert ON {$dbPrefix}category_translations;
             CREATE TRIGGER trig_category_translations_insert
@@ -63,7 +63,7 @@ class AddTriggerToCategoryTranslations extends Migration
             EXECUTE FUNCTION {$dbPrefix}category_translations_set_url_path();
         ");
 
-        // تریگر قبل از UPDATE
+        //
         DB::unprepared("
             DROP TRIGGER IF EXISTS trig_category_translations_update ON {$dbPrefix}category_translations;
             CREATE TRIGGER trig_category_translations_update

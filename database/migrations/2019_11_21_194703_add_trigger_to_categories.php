@@ -13,19 +13,18 @@ class AddTriggerToCategories extends Migration
 
         $dbPrefix = DB::getTablePrefix();
 
-        // تابع تریگر برای ست کردن url_path در جدول categories
+        // Create function to set url_path in categories table
         DB::unprepared("
             CREATE OR REPLACE FUNCTION {$dbPrefix}categories_set_url_path()
             RETURNS trigger AS $$
             BEGIN
-                -- اگر منطق خاصی نداری، فعلاً url_path = slug
                 NEW.url_path := NEW.slug;
                 RETURN NEW;
             END;
             $$ LANGUAGE plpgsql;
         ");
 
-        -- تریگر قبل از INSERT
+        // Trigger before INSERT
         DB::unprepared("
             DROP TRIGGER IF EXISTS trig_categories_insert ON {$dbPrefix}categories;
             CREATE TRIGGER trig_categories_insert
@@ -34,7 +33,7 @@ class AddTriggerToCategories extends Migration
             EXECUTE FUNCTION {$dbPrefix}categories_set_url_path();
         ");
 
-        -- تریگر قبل از UPDATE
+        // Trigger before UPDATE
         DB::unprepared("
             DROP TRIGGER IF EXISTS trig_categories_update ON {$dbPrefix}categories;
             CREATE TRIGGER trig_categories_update

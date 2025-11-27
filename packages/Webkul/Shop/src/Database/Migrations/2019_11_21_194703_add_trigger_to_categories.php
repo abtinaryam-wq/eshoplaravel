@@ -13,7 +13,7 @@ class AddTriggerToCategories extends Migration
 
         $dbPrefix = DB::getTablePrefix();
 
-        // تابع تریگر برای categories
+        //
         DB::unprepared("
             CREATE OR REPLACE FUNCTION {$dbPrefix}categories_set_url_path()
             RETURNS trigger AS $$
@@ -24,7 +24,7 @@ class AddTriggerToCategories extends Migration
             $$ LANGUAGE plpgsql;
         ");
 
-        // تریگر قبل از INSERT
+        //
         DB::unprepared("
             DROP TRIGGER IF EXISTS trig_categories_insert ON {$dbPrefix}categories;
             CREATE TRIGGER trig_categories_insert
@@ -33,7 +33,7 @@ class AddTriggerToCategories extends Migration
             EXECUTE FUNCTION {$dbPrefix}categories_set_url_path();
         ");
 
-        // تریگر قبل از UPDATE
+        //
         DB::unprepared("
             DROP TRIGGER IF EXISTS trig_categories_update ON {$dbPrefix}categories;
             CREATE TRIGGER trig_categories_update

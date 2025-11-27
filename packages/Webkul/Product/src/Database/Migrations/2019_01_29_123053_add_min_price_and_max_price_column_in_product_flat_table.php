@@ -15,9 +15,9 @@ class AddMinPriceAndMaxPriceColumnInProductFlatTable extends Migration
         });
 
         if (DB::getDriverName() === 'pgsql') {
-            // ابتدا ستون را به متن تغییر دهیم (که قابلیت تبدیل بیشتری دارد)
+            //
             DB::statement('ALTER TABLE product_flat ALTER COLUMN special_price TYPE VARCHAR USING special_price::VARCHAR');
-            // سپس به numeric تبدیل کنیم
+            //
             DB::statement('ALTER TABLE product_flat ALTER COLUMN special_price TYPE NUMERIC(12,4) USING special_price::NUMERIC(12,4)');
             DB::statement('ALTER TABLE product_flat ALTER COLUMN special_price DROP NOT NULL');
         } else {

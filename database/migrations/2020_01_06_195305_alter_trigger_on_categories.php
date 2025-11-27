@@ -13,7 +13,7 @@ class AlterTriggerOnCategories extends Migration
 
         $dbPrefix = DB::getTablePrefix();
 
-        // دوباره تریگرها را برای categories تعریف می‌کنیم
+        //
         DB::unprepared("
             DROP TRIGGER IF EXISTS trig_categories_insert ON {$dbPrefix}categories;
             DROP TRIGGER IF EXISTS trig_categories_update ON {$dbPrefix}categories;
