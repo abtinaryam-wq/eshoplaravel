@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -11,13 +9,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('url_rewrites', function (Blueprint $table) {
-            
-        });
-
-        Schema::table('visits', function (Blueprint $table) {
-            
-        });
+        return; // TEMP: Skip for PostgreSQL compatibility
     }
 
     /**
@@ -25,10 +17,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('url_rewrites', function (Blueprint $table) {
-            if (Schema::hasIndex('url_rewrites', 'url_rewrites_et_rp_lc_idx')) {
-                $table->dropIndex('url_rewrites_et_rp_lc_idx');
-            }
-        });
+        //
     }
 };
