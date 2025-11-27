@@ -37,13 +37,18 @@ WORKDIR /var/www/html/eshop
 COPY . .
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
+# Build and optimize
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
     && npm install \
-    && npm run production \
+    && npm run production
+
+# Fix permissions - CRITICAL FIX
+RUN mkdir -p /var/www/html/eshop/storage/framework/views \
     && chown -R nginx:nginx /var/www/html/eshop \
     && chmod -R 755 /var/www/html/eshop \
-    && chmod -R 775 /var/www/html/eshop/storage \
-    && chmod -R 775 /var/www/html/eshop/bootstrap/cache \
+    && chmod -R 777 /var/www/html/eshop/storage \
+    && chmod -R 777 /var/www/html/eshop/bootstrap/cache \
+    && chmod -R 777 /var/www/html/eshop/storage/framework/views \
     && mkdir -p /run/nginx
 
 EXPOSE 80
