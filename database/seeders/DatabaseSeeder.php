@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(BagistoDatabaseSeeder::class);
-        $this->call(VelocityMetaDataSeeder::class);
+        // TEMP: Skip seeders for PostgreSQL - trigger issues with categories
+        // $this->call(BagistoDatabaseSeeder::class);
+        // $this->call(VelocityMetaDataSeeder::class);
     }
 }
