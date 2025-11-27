@@ -12,21 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('url_rewrites', function (Blueprint $table) {
-            if (! Schema::hasIndex('url_rewrites', 'url_rewrites_et_rp_lc_idx')) {
-                $table->index(
-                    ['entity_type', 'request_path', 'locale'],
-                    'url_rewrites_et_rp_lc_idx'
-                );
-            }
+            
         });
 
         Schema::table('visits', function (Blueprint $table) {
-            if (! Schema::hasIndex('visits', 'visits_cid_ip_m_vid_vt_ca_idx')) {
-                $table->index(
-                    ['channel_id', 'ip', 'method', 'visitor_id', 'visitor_type', 'created_at'],
-                    'visits_cid_ip_m_vid_vt_ca_idx'
-                );
-            }
+            
         });
     }
 
