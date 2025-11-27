@@ -1,44 +1,30 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
+class AddIndexesToProductRelationTables extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::table('product_price_indices', function (Blueprint $table) {
-            if (! Schema::hasIndex('product_price_indices', 'ppi_product_id_customer_group_id_idx')) {
-                $table->index(['product_id', 'customer_group_id'], 'ppi_product_id_customer_group_id_idx');
-            }
-        });
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
 
-        Schema::table('product_channels', function (Blueprint $table) {
-            if (! Schema::hasIndex('product_channels', 'pc_product_id_channel_id_idx')) {
-                $table->index(['product_id', 'channel_id'], 'pc_product_id_channel_id_idx');
-            }
-        });
+        // Create indexes using raw SQL (PostgreSQL compatible)
+        DB::statement("CREATE INDEX IF NOT EXISTS idx_product_price_indices_product_id ON product_price_indices(product_id)");
+        DB::statement("CREATE INDEX IF NOT EXISTS idx_product_inventories_product_id ON product_inventories(product_id)");
+        DB::statement("CREATE INDEX IF NOT EXISTS idx_product_images_product_id ON product_images(product_id)");
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::table('product_price_indices', function (Blueprint $table) {
-            if (Schema::hasIndex('product_price_indices', 'ppi_product_id_customer_group_id_idx')) {
-                $table->dropIndex('ppi_product_id_customer_group_id_idx');
-            }
-        });
+        if (DB::getDriverName() !== 'pgsql') {
+            return;
+        }
 
-        Schema::table('product_channels', function (Blueprint $table) {
-            if (Schema::hasIndex('product_channels', 'pc_product_id_channel_id_idx')) {
-                $table->dropIndex('pc_product_id_channel_id_idx');
-            }
-        });
+        DB::statement("DROP INDEX IF EXISTS idx_product_price_indices_product_id");
+        DB::statement("DROP INDEX IF EXISTS idx_product_inventories_product_id");
+        DB::statement("DROP INDEX IF EXISTS idx_product_images_product_id");
     }
-};
+}
