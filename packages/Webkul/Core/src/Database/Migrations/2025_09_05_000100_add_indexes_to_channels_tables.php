@@ -3,54 +3,47 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
+class AddIndexesToChannelsTables extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::table('channels', function (Blueprint $table) {
-            if (! Schema::hasIndex('channels', 'channels_hostname_idx')) {
-                $table->index('hostname', 'channels_hostname_idx');
-            }
-        });
-
-        Schema::table('channel_locales', function (Blueprint $table) {
-            if (! Schema::hasIndex('channel_locales', 'channel_locales_cid_lid_idx')) {
-                $table->index(['channel_id', 'locale_id'], 'channel_locales_cid_lid_idx');
-            }
-        });
-
-        Schema::table('channel_currencies', function (Blueprint $table) {
-            if (! Schema::hasIndex('channel_currencies', 'channel_currencies_cid_cyid_idx')) {
-                $table->index(['channel_id', 'currency_id'], 'channel_currencies_cid_cyid_idx');
-            }
-        });
+        if (DB::getDriverName() === 'pgsql') {
+            // PostgreSQL way: use raw SQL
+            DB::statement("CREATE INDEX IF NOT EXISTS idx_channels_code ON channels(code)");
+            DB::statement("CREATE INDEX IF NOT EXISTS idx_channels_name ON channels(name)");
+        } else {
+            // MySQL way
+            Schema::table('channels', function (Blueprint $table) {
+                if (! $this->hasIndex('channels', 'idx_channels_code')) {
+                    $table->index('code', 'idx_channels_code');
+                }
+                if (! $this->hasIndex('channels', 'idx_channels_name')) {
+                    $table->index('name', 'idx_channels_name');
+                }
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::table('channels', function (Blueprint $table) {
-            if (Schema::hasIndex('channels', 'channels_hostname_idx')) {
-                $table->dropIndex('channels_hostname_idx');
-            }
-        });
-
-        Schema::table('channel_locales', function (Blueprint $table) {
-            if (Schema::hasIndex('channel_locales', 'channel_locales_cid_lid_idx')) {
-                $table->dropIndex('channel_locales_cid_lid_idx');
-            }
-        });
-
-        Schema::table('channel_currencies', function (Blueprint $table) {
-            if (Schema::hasIndex('channel_currencies', 'channel_currencies_cid_cyid_idx')) {
-                $table->dropIndex('channel_currencies_cid_cyid_idx');
-            }
-        });
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement("DROP INDEX IF EXISTS idx_channels_code");
+            DB::statement("DROP INDEX IF EXISTS idx_channels_name");
+        } else {
+            Schema::table('channels', function (Blueprint $table) {
+                $table->dropIndex('idx_channels_code');
+                $table->dropIndex('idx_channels_name');
+            });
+        }
     }
-};
+
+    protected function hasIndex($table, $indexName)
+    {
+        return DB::select(
+            "SELECT 1 FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = ? AND index_name = ?",
+            [$table, $indexName]
+        );
+    }
+}
