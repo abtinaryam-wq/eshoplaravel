@@ -53,7 +53,11 @@ RUN mkdir -p /var/www/html/eshop/storage/framework/views \
 
 EXPOSE 80
 
-CMD php artisan migrate --force && \
-    php artisan db:seed --force && \
+# FIX: Clear cache + Migrate + Seed + Start services
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan view:clear && \
+    php artisan migrate:fresh --seed --force && \
+    php artisan bagisto:publish --force && \
     php-fpm -D && \
     nginx -g "daemon off;"
