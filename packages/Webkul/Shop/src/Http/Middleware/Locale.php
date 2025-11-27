@@ -36,7 +36,9 @@ class Locale
             if ($localeCode = session()->get('locale')) {
                 app()->setLocale($localeCode);
             } else {
-                app()->setLocale(core()->getDefaultChannel()->default_locale->code);
+                // FIXED: Null-safe default locale for empty seeders
+                $defaultLocale = core()->getDefaultChannel()->default_locale?->code ?? 'en';
+                app()->setLocale($defaultLocale);
             }
         }
 
