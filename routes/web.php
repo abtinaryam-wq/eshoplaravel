@@ -12,31 +12,50 @@
 */
 
 use Illuminate\Support\Facades\Route;
-use Webkul\Core\Models\Channel;
 use Illuminate\Support\Facades\Artisan;
+use Webkul\Core\Models\Channel;
 
-Route::get('/fix-my-db', function () {
+Route::get('/emergency-install', function () {
+    // افزایش زمان اجرا چون سید کردن طول میکشه
+    ini_set('max_execution_time', 300); 
+    
+    $output = '<div style="font-family:tahoma; direction:rtl; padding:20px;">';
+    $output .= '<h1>🚀 گزارش عملیات نصب اضطراری</h1>';
+
     try {
-        // 1. پیدا کردن کانال پیش‌فرض
+        // مرحله ۱: اجرای مایگریشن‌ها (ساخت جداول)
+        Artisan::call('migrate', ['--force' => true]);
+        $output .= '<h3 style="color:green">✅ مرحله ۱: جداول دیتابیس بررسی/ساخته شدند.</h3>';
+
+        // مرحله ۲: اجرای سیدر (پر کردن اطلاعات اولیه)
+        // نکته: این دستور ممکنه کمی طول بکشه
+        Artisan::call('db:seed', ['--force' => true]);
+        $output .= '<h3 style="color:green">✅ مرحله ۲: اطلاعات پایه (محصولات، کانال‌ها، واحد پول) وارد شد.</h3>';
+
+        // مرحله ۳: تنظیم آدرس سایت
         $channel = Channel::first();
-        
-        if (!$channel) {
-            return "❌ هیچ کانالی در دیتابیس پیدا نشد! احتمالا دیتابیس سید نشده.";
+        if ($channel) {
+            $oldHost = $channel->hostname;
+            $channel->hostname = 'eshoplaravel.onrender.com';
+            $channel->save();
+            $output .= "<h3 style="color:blue">✅ مرحله ۳: آدرس کانال از <b>{$oldHost}</b> به <b>eshoplaravel.onrender.com</b> تغییر یافت.</h3>";
+        } else {
+            $output .= '<h3 style="color:red">❌ خطا در مرحله ۳: کانال ساخته نشد!</h3>';
         }
 
-        $oldHost = $channel->hostname;
-        
-        // 2. تغییر هاست‌نیم به آدرس سایت شما در رندر
-        // نکته: این آدرس باید دقیقا همونی باشه که سایت باهاش باز میشه
-        $channel->hostname = 'eshoplaravel.onrender.com';
-        $channel->save();
-
-        // 3. پاک کردن کش‌ها برای اطمینان
+        // مرحله ۴: پاکسازی کش
         Artisan::call('optimize:clear');
-
-        return "✅ انجام شد! <br> هاست‌نیم از <b>{$oldHost}</b> به <b>{$channel->hostname}</b> تغییر کرد. <br> کش سیستم هم پاک شد. حالا سایت اصلی رو باز کنید.";
+        Artisan::call('view:clear');
+        $output .= '<h3 style="color:green">✅ مرحله ۴: کش سیستم پاک شد.</h3>';
         
+        $output .= '<hr><h2>🎉 تمام شد! حالا صفحه اصلی سایت را باز کنید.</h2>';
+
     } catch (\Exception $e) {
-        return "⚠️ خطا: " . $e->getMessage();
+        $output .= '<h2 style="color:red">💀 عملیات با خطا مواجه شد:</h2>';
+        $output .= '<pre style="direction:ltr; text-align:left; background:#eee; padding:10px;">' . $e->getMessage() . '</pre>';
+        $output .= '<pre style="direction:ltr; text-align:left; background:#eee; padding:10px;">' . $e->getTraceAsString() . '</pre>';
     }
+
+    $output .= '</div>';
+    return $output;
 });
