@@ -42,7 +42,7 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
     && npm install \
     && npm run production
 
-# Fix permissions - CRITICAL FIX
+# Fix permissions
 RUN mkdir -p /var/www/html/eshop/storage/framework/views \
     && chown -R nginx:nginx /var/www/html/eshop \
     && chmod -R 755 /var/www/html/eshop \
@@ -51,13 +51,10 @@ RUN mkdir -p /var/www/html/eshop/storage/framework/views \
     && chmod -R 777 /var/www/html/eshop/storage/framework/views \
     && mkdir -p /run/nginx
 
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 80
 
-# FIX: Clear cache + Migrate + Seed + Start services
-CMD php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan view:clear && \
-    php artisan migrate:fresh --seed --force && \
-    php artisan bagisto:publish --force && \
-    php-fpm -D && \
-    nginx -g "daemon off;"
+ENTRYPOINT ["/entrypoint.sh"]
